@@ -188,7 +188,7 @@ public class Z80 {
                 break;
             case 0x5F:
                 registerE = registerA;
-                break;                            
+                break;
             case 0x60:
                 registerH = registerB;
                 break;
@@ -209,7 +209,50 @@ public class Z80 {
                 break;
             case 0x67:
                 registerH = registerA;
-                break;                
+                break;
+            case 0x68:
+                registerL = registerB;
+                break;
+            case 0x69:
+                registerL = registerC;
+                break;
+            case 0x6A:
+                registerL = registerD;
+                break;
+            case 0x6B:
+                registerL = registerE;
+                break;
+            case 0x6C:
+                registerL = registerH;
+                break;
+            case 0x6D:
+                //registerL = registerL;
+                break;
+            case 0x6F:
+                registerL = registerA;
+                break;
+            case 0x78:
+                registerA = registerB;
+                break;
+            case 0x79:
+                registerA = registerC;
+                break;
+            case 0x7A:
+                registerA = registerD;
+                break;
+            case 0x7B:
+                registerA = registerE;
+                break;
+            case 0x7C:
+                registerA = registerH;
+                break;
+            case 0x7D:
+                registerA = registerL;
+                break;
+            case 0x7F:
+                //registerA = registerA;
+                break;
+
             default:
                 return;
         }

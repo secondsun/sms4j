@@ -473,6 +473,142 @@ public class E01_Z80DecodeTest {
 
     }
     
+    @Test
+    public void testCopyRegisterToLLoadInstructions() {
+        //Test 16 bit loads into various registers
+        Z80 z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x01, 0xEE, 0xEE,
+            0x68}); //Load into BC value 0xEEEE, the LD C,b (copy b into C)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xEE, z80.getL());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x01, 0xEE, 0xFE,
+            0x69}); //Load into BC value 0xEEFE, then LD c,c (copy c into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xFE, z80.getL());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x11, 0xFE, 0xDE,
+            0x6A}); //Load into DE value 0xFEDE, the LD c,d (copy d into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xFE, z80.getL());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x11, 0xFE, 0xDE,
+            0x6B}); //Load into DE value 0xFEDE, the LD c,e (copy E into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xDE, z80.getL());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x21, 0x12, 0x34,
+            0x6C}); //Load into HL value 0x1234, the LD c,H (copy H into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0x12, z80.getL());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x21, 0x12, 0x34,
+            0x6D}); //Load into HL value 0x1234, the LD c,l (copy l into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0x34, z80.getL());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x3E, 0xAD,
+            0x6F}); //Load into A value 0xAD, the LD c,a (copy a into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xAD, z80.getL());
+        Assert.assertEquals(3, z80.getPC());
+
+    }
+    
+    @Test
+    public void testCopyRegisterToALoadInstructions() {
+        //Test 16 bit loads into various registers
+        Z80 z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x01, 0xEE, 0xEE,
+            0x78}); //Load into BC value 0xEEEE, the LD C,b (copy b into C)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xEE, z80.getA());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x01, 0xEE, 0xFE,
+            0x79}); //Load into BC value 0xEEFE, then LD c,c (copy c into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xFE, z80.getA());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x11, 0xFE, 0xDE,
+            0x7A}); //Load into DE value 0xFEDE, the LD c,d (copy d into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xFE, z80.getA());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x11, 0xFE, 0xDE,
+            0x7B}); //Load into DE value 0xFEDE, the LD c,e (copy E into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xDE, z80.getA());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x21, 0x12, 0x34,
+            0x7C}); //Load into HL value 0x1234, the LD c,H (copy H into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0x12, z80.getA());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x21, 0x12, 0x34,
+            0x7D}); //Load into HL value 0x1234, the LD c,l (copy l into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0x34, z80.getA());
+        Assert.assertEquals(4, z80.getPC());
+
+        z80 = new Z80();
+        z80.setPC(0);
+        z80.setMemory(new int[]{0x3E, 0xAD,
+            0x7F}); //Load into A value 0xAD, the LD c,a (copy a into c)
+        z80.executeNextInstruction();
+        z80.executeNextInstruction();
+        Assert.assertEquals(0xAD, z80.getA());
+        Assert.assertEquals(3, z80.getPC());
+
+    }
+    
     /**
      * From http://z80.info/decoding.htm
      *
