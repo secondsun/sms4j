@@ -105,6 +105,111 @@ public class Z80 {
             case 0x31:
                 stackPointer = memory[programCounter++] << 8 | memory[programCounter++];
                 break;
+            case 0x40:
+                // Decodes to registerB = registerB;
+                break;
+            case 0x41:
+                registerB = registerC;
+                break;
+            case 0x42:
+                registerB = registerD;
+                break;
+            case 0x43:
+                registerB = registerE;
+                break;
+            case 0x44:
+                registerB = registerH;
+                break;
+            case 0x45:
+                registerB = registerL;
+                break;
+            case 0x47:
+                registerB = registerA;
+                break;
+            case 0x48:
+                registerC = registerB;
+                break;
+            case 0x49:
+                //Decodes to registerC = registerC;
+                break;
+            case 0x4A:
+                registerC = registerD;
+                break;
+            case 0x4B:
+                registerC = registerE;
+                break;
+            case 0x4C:
+                registerC = registerH;
+                break;
+            case 0x4D:
+                registerC = registerL;
+                break;
+            case 0x4F:
+                registerC = registerA;
+                break;
+            case 0x50:
+                registerD = registerB;
+                break;
+            case 0x51:
+                registerD = registerC;
+                break;
+            case 0x52:
+                registerD = registerD;
+                break;
+            case 0x53:
+                registerD = registerE;
+                break;
+            case 0x54:
+                registerD = registerH;
+                break;
+            case 0x55:
+                registerD = registerL;
+                break;
+            case 0x57:
+                registerD = registerA;
+                break;
+            case 0x58:
+                registerE = registerB;
+                break;
+            case 0x59:
+                registerE = registerC;
+                break;
+            case 0x5A:
+                registerE = registerD;
+                break;
+            case 0x5B:
+                //registerE = registerE;
+                break;
+            case 0x5C:
+                registerE = registerH;
+                break;
+            case 0x5D:
+                registerE = registerL;
+                break;
+            case 0x5F:
+                registerE = registerA;
+                break;                            
+            case 0x60:
+                registerH = registerB;
+                break;
+            case 0x61:
+                registerH = registerC;
+                break;
+            case 0x62:
+                registerH = registerD;
+                break;
+            case 0x63:
+                registerH = registerE;
+                break;
+            case 0x64:
+                //registerH = registerH;
+                break;
+            case 0x65:
+                registerH = registerL;
+                break;
+            case 0x67:
+                registerH = registerA;
+                break;                
             default:
                 return;
         }
