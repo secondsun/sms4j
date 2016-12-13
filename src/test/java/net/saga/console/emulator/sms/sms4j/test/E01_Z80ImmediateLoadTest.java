@@ -11,7 +11,7 @@ import org.junit.Test;
  *
  * @author secondsun
  */
-public class E01_Z80DecodeTest {
+public class E01_Z80ImmediateLoadTest {
 
     /**
      * The Program Count (PC) is a register which keeps a reference to the
