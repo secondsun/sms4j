@@ -26,43 +26,43 @@ package net.saga.console.emulator.sms.sms4j;
  */
 public class Z80 {
 
-    private int registerA;
-    private int registerB;
-    private int registerC;
-    private int registerD;
-    private int registerE;
-    private int registerF;
-    private int registerH;
-    private int registerL;
+    private byte registerA;
+    private byte registerB;
+    private byte registerC;
+    private byte registerD;
+    private byte registerE;
+    private byte registerF;//S Z X H X P/V N C
+    private byte registerH;
+    private byte registerL;
 
-    private int registerA_alt;
-    private int registerB_alt;
-    private int registerC_alt;
-    private int registerD_alt;
-    private int registerE_alt;
-    private int registerF_alt;
-    private int registerH_alt;
-    private int registerL_alt;
+    private byte registerA_alt;
+    private byte registerB_alt;
+    private byte registerC_alt;
+    private byte registerD_alt;
+    private byte registerE_alt;
+    private byte registerF_alt;
+    private byte registerH_alt;
+    private byte registerL_alt;
 
-    private int interruptVextor;
+    private int interruptVector;
     private int memoryRefresh;
     private int indexRegisterIX;
     private int indexRegisterIY;
     private int stackPointer;
     private int programCounter;
-    private int[] memory;
+    private byte[] memory;
 
     private int cycleCountDown = 0; //cycleCountDown is incremented by the number of cycles an instruction requires.
 
-    public boolean isPrefix(int testPrefix) {
-        return (testPrefix == 0xCB) || (testPrefix == 0xDD) || (testPrefix == 0xED) || (testPrefix == 0xFD);
+    public boolean isPrefix(byte testPrefix) {
+        return (testPrefix == (byte)0xCB) || (testPrefix == (byte)0xDD) || (testPrefix == (byte)0xED) || (testPrefix == (byte)0xFD);
     }
 
     public void setPC(int pcIndex) {
         this.programCounter = pcIndex;
     }
 
-    public void setMemory(int[] memory) {
+    public void setMemory(byte[] memory) {
         this.memory = memory;
     }
 
@@ -76,12 +76,38 @@ public class Z80 {
             case 0:
                 cycleCountDown += 4;
                 return;
-            case 0x1:
-                registerB = memory[programCounter++];
+            case 0x01:
                 registerC = memory[programCounter++];
+                registerB = memory[programCounter++];
                 cycleCountDown += 10;
                 break;
-            case 0x6:
+            case 0x03: { //Incr BC 6 cycles
+                int bc = (((int)registerB << 8)) | (0x00FF&(int)registerC);
+                bc++;
+                registerB = (byte) ((bc & 0xFF00) >> 8);
+                registerC = (byte) (bc & 0xFF);
+                cycleCountDown += 6;
+                break;
+            }
+            case 0x04: {//Incr B 4 cycles, affects f register
+                byte b = registerB;
+                if (registerB < 0) {//different signs, may never overflow
+                    setVOverflow(false);
+                } else if ((byte) (registerB + 1) < 0) {//b+1 overflows to negative
+                    setVOverflow(true);
+                }
+
+                b++;
+
+                setHalfCarry(checkHalfCarry(registerB, b));
+                setZero(b == 0);
+                setSign(((byte) b) < 0);
+                registerB = (byte)(b & 0xFF);
+                setSubtractFlag(false);
+                cycleCountDown += 4;
+                break;
+            }
+            case 0x06:
                 registerB = memory[programCounter++];
                 cycleCountDown += 7;
                 break;
@@ -98,8 +124,8 @@ public class Z80 {
                 cycleCountDown += 7;
                 break;
             case 0x11:
-                registerD = memory[programCounter++];
                 registerE = memory[programCounter++];
+                registerD = memory[programCounter++];
                 cycleCountDown += 10;
                 break;
             case 0x1E:
@@ -115,12 +141,12 @@ public class Z80 {
                 cycleCountDown += 7;
                 break;
             case 0x21:
-                registerH = memory[programCounter++];
                 registerL = memory[programCounter++];
+                registerH = memory[programCounter++];
                 cycleCountDown += 10;
                 break;
             case 0x31:
-                stackPointer = memory[programCounter++] << 8 | memory[programCounter++];
+                stackPointer = ((0xFF&memory[programCounter++] ) | ((0xFF00&(memory[programCounter++])<< 8)))&0xFFFF;
                 cycleCountDown += 10;
                 break;
             case 0x40:
@@ -330,54 +356,54 @@ public class Z80 {
     }
 
     public int getBC() {
-        return registerB << 8 | registerC;
+        return (0xFFFF&((((0x0FF)&registerB) << 8) | ((0x0FF)&registerC)));
     }
 
     public int getDE() {
-        return registerD << 8 | registerE;
+        return (0xFFFF&((((0x0FF)&registerD) << 8) | ((0x0FF)&registerE)));
     }
 
     public int getHL() {
-        return registerH << 8 | registerL;
+        return (0xFFFF&((((0x0FF)&registerH) << 8) | ((0x0FF)&registerL)));
     }
 
-    public int getB() {
+    public byte getB() {
         return registerB;
     }
 
-    public int getD() {
+    public byte getD() {
         return registerD;
     }
 
-    public int getH() {
+    public byte getH() {
         return registerH;
     }
 
-    public int getL() {
+    public byte getL() {
         return registerL;
     }
 
-    public int getA() {
+    public byte getA() {
         return registerA;
     }
 
     public int getSP() {
-        return stackPointer;
+        return 0xFFFF&stackPointer;
     }
 
-    public int getC() {
+    public byte getC() {
         return registerC;
     }
 
-    public int getE() {
+    public byte getE() {
         return registerE;
     }
 
     /**
      * This will signal a clock cycle to the z80
-     * 
+     *
      * @param numberOfCycles the number of cycles to execute
-     */ 
+     */
     public void cycle(int numberOfCycles) {
         for (int i = 0; i < numberOfCycles; i++) {
             if (cycleCountDown <= 0) {
@@ -385,6 +411,51 @@ public class Z80 {
             }
             cycleCountDown--;
         }
+    }
+
+    private void setCarry(boolean b) {
+        byte maskedF = (byte) (registerF & 0xFE);
+        registerF = (byte)(maskedF | (b ? 1 : 0));
+    }
+
+    private void setHalfCarry(boolean b) {
+        byte maskedF = (byte)(registerF & 0b11101111);
+        registerF = (byte)(maskedF | (b ? 0b10000 : 0));
+    }
+
+    private void setZero(boolean b) {
+        byte maskedF = (byte)(registerF & 0b10111111);
+        registerF = (byte)(maskedF | (b ? 0b1000000 : 0));
+    }
+
+    private void setSign(boolean b) {
+        byte maskedF = (byte)(registerF & 0b01111111);
+        registerF = (byte)(maskedF | (b ? 0b10000000 : 0));
+    }
+
+    private void setSubtractFlag(boolean b) {
+        byte maskedF = (byte)(registerF & 0b11111101);
+        registerF = (byte)(maskedF | (b ? 0x10 : 0x00));
+    }
+
+    private void setVOverflow(boolean b) {
+        byte maskedF = (byte)(registerF & 0b11111011);
+        registerF = (byte)(maskedF | (b ? 0x100 : 0x000));
+    }
+
+    /**
+     * Check if there is a carry from bit 3 to bit 4
+     *
+     * @param original
+     * @param updated
+     * @return true on a half carry
+     */
+    private boolean checkHalfCarry(byte original, byte updated) {
+        return ((original & 0b00001000) != (updated & 0b00001000));
+    }
+
+    public int getFlags() {
+        return registerF;
     }
 
 }
