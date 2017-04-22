@@ -26,23 +26,23 @@ package net.saga.console.emulator.sms.sms4j;
  */
 public class Z80 {
 
-    private byte registerA;
-    private byte registerB;
-    private byte registerC;
-    private byte registerD;
-    private byte registerE;
-    private byte registerF;//S Z X H X P/V N C
-    private byte registerH;
-    private byte registerL;
+    private final Register registerA = new Register();
+    private final Register registerB = new Register();
+    private final Register registerC = new Register();
+    private final Register registerD = new Register();
+    private final Register registerE = new Register();
+    private final Register registerF = new Register();//S Z X H X P/V N C
+    private final Register registerH = new Register();
+    private final Register registerL = new Register();
 
-    private byte registerA_alt;
-    private byte registerB_alt;
-    private byte registerC_alt;
-    private byte registerD_alt;
-    private byte registerE_alt;
-    private byte registerF_alt;
-    private byte registerH_alt;
-    private byte registerL_alt;
+    private Register registerA_alt;
+    private Register registerB_alt;
+    private Register registerC_alt;
+    private Register registerD_alt;
+    private Register registerE_alt;
+    private Register registerF_alt;
+    private Register registerH_alt;
+    private Register registerL_alt;
 
     private int interruptVector;
     private int memoryRefresh;
@@ -55,7 +55,7 @@ public class Z80 {
     private int cycleCountDown = 0; //cycleCountDown is incremented by the number of cycles an instruction requires.
 
     public boolean isPrefix(byte testPrefix) {
-        return (testPrefix == (byte)0xCB) || (testPrefix == (byte)0xDD) || (testPrefix == (byte)0xED) || (testPrefix == (byte)0xFD);
+        return (testPrefix == (byte) 0xCB) || (testPrefix == (byte) 0xDD) || (testPrefix == (byte) 0xED) || (testPrefix == (byte) 0xFD);
     }
 
     public void setPC(int pcIndex) {
@@ -77,271 +77,271 @@ public class Z80 {
                 cycleCountDown += 4;
                 return;
             case 0x01:
-                registerC = memory[programCounter++];
-                registerB = memory[programCounter++];
+                registerC.setValue(memory[programCounter++]);
+                registerB.setValue(memory[programCounter++]);
                 cycleCountDown += 10;
                 break;
             case 0x03: { //Incr BC 6 cycles
-                int bc = (((int)registerB << 8)) | (0x00FF&(int)registerC);
+                int bc = ((registerB.getValue() << 8) | registerC.getValue());
                 bc++;
-                registerB = (byte) ((bc & 0xFF00) >> 8);
-                registerC = (byte) (bc & 0xFF);
+                registerB.setValue((bc & 0xFF00) >> 8);
+                registerC.setValue(bc);
                 cycleCountDown += 6;
                 break;
             }
             case 0x04: {//Incr B 4 cycles, affects f register
-                byte b = registerB;
-                if (registerB < 0) {//different signs, may never overflow
+                byte b = registerB.getValueAsByte();
+                if (b < 0) {//different signs, may never overflow
                     setVOverflow(false);
-                } else if ((byte) (registerB + 1) < 0) {//b+1 overflows to negative
+                } else if ((b + 1) < 0) {//b+1 overflows to negative
                     setVOverflow(true);
                 }
 
                 b++;
 
-                setHalfCarry(checkHalfCarry(registerB, b));
+                setHalfCarry(checkHalfCarry(registerB.getValueAsByte(), b));
                 setZero(b == 0);
                 setSign(((byte) b) < 0);
-                registerB = (byte)(b & 0xFF);
+                registerB.setValue(b);
                 setSubtractFlag(false);
                 cycleCountDown += 4;
                 break;
             }
             case 0x06:
-                registerB = memory[programCounter++];
+                registerB.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x16:
-                registerD = memory[programCounter++];
+                registerD.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x26:
-                registerH = memory[programCounter++];
+                registerH.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x0E:
-                registerC = memory[programCounter++];
+                registerC.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x11:
-                registerE = memory[programCounter++];
-                registerD = memory[programCounter++];
+                registerE.setValue(memory[programCounter++]);
+                registerD.setValue(memory[programCounter++]);
                 cycleCountDown += 10;
                 break;
             case 0x1E:
-                registerE = memory[programCounter++];
+                registerE.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x2E:
-                registerL = memory[programCounter++];
+                registerL.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x3E:
-                registerA = memory[programCounter++];
+                registerA.setValue(memory[programCounter++]);
                 cycleCountDown += 7;
                 break;
             case 0x21:
-                registerL = memory[programCounter++];
-                registerH = memory[programCounter++];
+                registerL.setValue(memory[programCounter++]);
+                registerH.setValue(memory[programCounter++]);
                 cycleCountDown += 10;
                 break;
             case 0x31:
-                stackPointer = ((0xFF&memory[programCounter++] ) | ((0xFF00&(memory[programCounter++])<< 8)))&0xFFFF;
+                stackPointer = ((0xFF & memory[programCounter++]) | ((0xFF00 & (memory[programCounter++]) << 8))) & 0xFFFF;
                 cycleCountDown += 10;
                 break;
             case 0x40:
-                // Decodes to registerB = registerB;
+                // Decodes to registerB.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x41:
-                registerB = registerC;
+                registerB.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x42:
-                registerB = registerD;
+                registerB.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x43:
-                registerB = registerE;
+                registerB.setValue(registerE.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x44:
-                registerB = registerH;
+                registerB.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x45:
-                registerB = registerL;
+                registerB.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x47:
-                registerB = registerA;
+                registerB.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x48:
-                registerC = registerB;
+                registerC.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x49:
-                //Decodes to registerC = registerC;
+                //Decodes to registerC.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x4A:
-                registerC = registerD;
+                registerC.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x4B:
-                registerC = registerE;
+                registerC.setValue(registerE.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x4C:
-                registerC = registerH;
+                registerC.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x4D:
-                registerC = registerL;
+                registerC.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x4F:
-                registerC = registerA;
+                registerC.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x50:
-                registerD = registerB;
+                registerD.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x51:
-                registerD = registerC;
+                registerD.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x52:
-                //registerD = registerD;
+                //registerD.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x53:
-                registerD = registerE;
+                registerD.setValue(registerE.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x54:
-                registerD = registerH;
+                registerD.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x55:
-                registerD = registerL;
+                registerD.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x57:
-                registerD = registerA;
+                registerD.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x58:
-                registerE = registerB;
+                registerE.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x59:
-                registerE = registerC;
+                registerE.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x5A:
-                registerE = registerD;
+                registerE.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x5B:
                 cycleCountDown += 4;
                 break;
             case 0x5C:
-                registerE = registerH;
+                registerE.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x5D:
-                registerE = registerL;
+                registerE.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x5F:
-                registerE = registerA;
+                registerE.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x60:
-                registerH = registerB;
+                registerH.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x61:
-                registerH = registerC;
+                registerH.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x62:
-                registerH = registerD;
+                registerH.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x63:
-                registerH = registerE;
+                registerH.setValue(registerE.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x64:
-                //registerH = registerH;
+                //registerH.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x65:
-                registerH = registerL;
+                registerH.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x67:
-                registerH = registerA;
+                registerH.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x68:
-                registerL = registerB;
+                registerL.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x69:
-                registerL = registerC;
+                registerL.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x6A:
-                registerL = registerD;
+                registerL.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x6B:
-                registerL = registerE;
+                registerL.setValue(registerE.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x6C:
-                registerL = registerH;
+                registerL.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x6D:
-                //registerL = registerL;
+                //registerL.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x6F:
-                registerL = registerA;
+                registerL.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x78:
-                registerA = registerB;
+                registerA.setValue(registerB.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x79:
-                registerA = registerC;
+                registerA.setValue(registerC.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x7A:
-                registerA = registerD;
+                registerA.setValue(registerD.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x7B:
-                registerA = registerE;
+                registerA.setValue(registerE.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x7C:
-                registerA = registerH;
+                registerA.setValue(registerH.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x7D:
-                registerA = registerL;
+                registerA.setValue(registerL.getValue());
                 cycleCountDown += 4;
                 break;
             case 0x7F:
-                //registerA = registerA;
+                //registerA.setValue(registerA.getValue());
                 cycleCountDown += 4;
                 break;
 
@@ -356,47 +356,47 @@ public class Z80 {
     }
 
     public int getBC() {
-        return (0xFFFF&((((0x0FF)&registerB) << 8) | ((0x0FF)&registerC)));
+        return (((registerB.getValue() << 8) | (registerC.getValue())));
     }
 
     public int getDE() {
-        return (0xFFFF&((((0x0FF)&registerD) << 8) | ((0x0FF)&registerE)));
+        return ((((registerD.getValue()) << 8) | (registerE.getValue())));
     }
 
     public int getHL() {
-        return (0xFFFF&((((0x0FF)&registerH) << 8) | ((0x0FF)&registerL)));
+        return ((((registerH.getValue()) << 8) | (registerL.getValue())));
     }
 
     public byte getB() {
-        return registerB;
+        return registerB.getValueAsByte();
     }
 
     public byte getD() {
-        return registerD;
+        return registerD.getValueAsByte();
     }
 
     public byte getH() {
-        return registerH;
+        return registerH.getValueAsByte();
     }
 
     public byte getL() {
-        return registerL;
+        return registerL.getValueAsByte();
     }
 
     public byte getA() {
-        return registerA;
+        return registerA.getValueAsByte();
     }
 
     public int getSP() {
-        return 0xFFFF&stackPointer;
+        return 0xFFFF & stackPointer;
     }
 
     public byte getC() {
-        return registerC;
+        return registerC.getValueAsByte();
     }
 
     public byte getE() {
-        return registerE;
+        return registerE.getValueAsByte();
     }
 
     /**
@@ -414,33 +414,33 @@ public class Z80 {
     }
 
     private void setCarry(boolean b) {
-        byte maskedF = (byte) (registerF & 0xFE);
-        registerF = (byte)(maskedF | (b ? 1 : 0));
+        byte maskedF = (byte) (registerF.getValue() & 0xFE);
+        registerF.setValue((maskedF | (b ? 1 : 0)));
     }
 
     private void setHalfCarry(boolean b) {
-        byte maskedF = (byte)(registerF & 0b11101111);
-        registerF = (byte)(maskedF | (b ? 0b10000 : 0));
+        byte maskedF = (byte) (registerF.getValue() & 0b11101111);
+        registerF.setValue(maskedF | (b ? 0b10000 : 0));
     }
 
     private void setZero(boolean b) {
-        byte maskedF = (byte)(registerF & 0b10111111);
-        registerF = (byte)(maskedF | (b ? 0b1000000 : 0));
+        byte maskedF = (byte) (registerF.getValue() & 0b10111111);
+        registerF.setValue(maskedF | (b ? 0b1000000 : 0));
     }
 
     private void setSign(boolean b) {
-        byte maskedF = (byte)(registerF & 0b01111111);
-        registerF = (byte)(maskedF | (b ? 0b10000000 : 0));
+        byte maskedF = (byte) (registerF.getValue() & 0b01111111);
+        registerF.setValue(maskedF | (b ? 0b10000000 : 0));
     }
 
     private void setSubtractFlag(boolean b) {
-        byte maskedF = (byte)(registerF & 0b11111101);
-        registerF = (byte)(maskedF | (b ? 0x10 : 0x00));
+        byte maskedF = (byte) (registerF.getValue() & 0b11111101);
+        registerF.setValue(maskedF | (b ? 0x10 : 0x00));
     }
 
     private void setVOverflow(boolean b) {
-        byte maskedF = (byte)(registerF & 0b11111011);
-        registerF = (byte)(maskedF | (b ? 0x100 : 0x000));
+        byte maskedF = (byte) (registerF.getValue() & 0b11111011);
+        registerF.setValue(maskedF | (b ? 0x100 : 0x000));
     }
 
     /**
@@ -455,7 +455,7 @@ public class Z80 {
     }
 
     public int getFlags() {
-        return registerF;
+        return registerF.getValue();
     }
 
 }
