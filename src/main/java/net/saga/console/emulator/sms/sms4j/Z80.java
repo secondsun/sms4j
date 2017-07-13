@@ -90,20 +90,7 @@ public class Z80 {
                 break;
             }
             case 0x04: {//Incr B 4 cycles, affects f register
-                byte b = registerB.getValueAsByte();
-                if (b < 0) {//different signs, may never overflow
-                    setVOverflow(false);
-                } else if ((b + 1) < 0) {//b+1 overflows to negative
-                    setVOverflow(true);
-                }
-
-                b++;
-
-                setHalfCarry(checkHalfCarry(registerB.getValueAsByte(), b));
-                setZero(b == 0);
-                setSign(((byte) b) < 0);
-                registerB.setValue(b);
-                setSubtractFlag(false);
+                increment(registerB);
                 cycleCountDown += 4;
                 break;
             }
@@ -435,12 +422,38 @@ public class Z80 {
 
     private void setSubtractFlag(boolean b) {
         byte maskedF = (byte) (registerF.getValue() & 0b11111101);
-        registerF.setValue(maskedF | (b ? 0x10 : 0x00));
+        registerF.setValue(maskedF | (b ? 0b10 : 0b00));
     }
 
     private void setVOverflow(boolean b) {
         byte maskedF = (byte) (registerF.getValue() & 0b11111011);
-        registerF.setValue(maskedF | (b ? 0x100 : 0x000));
+        registerF.setValue(maskedF | (b ? 0b100 : 0b000));
+    }
+
+    public boolean getFlagS() {
+        return (registerF.getValueAsByte() & 0x80) > 0;
+        
+    }
+
+    public boolean getFlagZ() {
+        return (registerF.getValueAsByte() & 0x40) > 0;
+    }
+
+    public boolean getFlagH() {
+        return (registerF.getValueAsByte() & 0x10) > 0;
+    }
+
+    
+    public boolean getFlagPV() {
+        return (registerF.getValueAsByte() & 0x04) > 0;
+    }
+    
+    public boolean getFlagN() {
+        return (registerF.getValueAsByte() & 0x02) > 0;
+    }
+
+    public boolean getFlagC() {
+        return (registerF.getValueAsByte() & 0x01) > 0;
     }
 
     /**
@@ -456,6 +469,23 @@ public class Z80 {
 
     public int getFlags() {
         return registerF.getValue();
+    }
+
+    private void increment(Register register) {
+        byte b = register.getValueAsByte();
+        if (b < 0) {//different signs, may never overflow
+            setVOverflow(false);
+        } else if ((byte)(b + 1) < 0) {//b+1 overflows to negative
+            setVOverflow(true);
+        }
+
+        b++;
+
+        setHalfCarry(checkHalfCarry(register.getValueAsByte(), b));
+        setZero(b == 0);
+        setSign(((byte) b) < 0);
+        register.setValue(b);
+        setSubtractFlag(false);
     }
 
 }

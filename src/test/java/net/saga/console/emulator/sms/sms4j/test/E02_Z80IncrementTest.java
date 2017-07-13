@@ -40,12 +40,17 @@ public class E02_Z80IncrementTest {
         Assert.assertEquals(0x02FF, z80.getBC());
         
         z80 = new Z80();
-        z80.setMemory(new byte[]{(byte)0x01, (byte)0xFF, (byte)0xFF, (byte)0x04}); //Load into BC value 0xFFFF
+        z80.setMemory(new byte[]{(byte)0x01, (byte)0x7F, (byte)0x7F, (byte)0x04}); //Load into BC value 0x7F7F
                                                     //INCR B by 1
         z80.cycle(14);
         Assert.assertEquals(4, z80.getPC());
-        Assert.assertEquals(0x00FF, z80.getBC());
-        Assert.assertEquals(0b01000000, z80.getFlags());
+        Assert.assertEquals(0x807F, z80.getBC());
+        Assert.assertTrue(z80.getFlagS());
+        Assert.assertFalse(z80.getFlagZ());
+        Assert.assertTrue(z80.getFlagH());
+        Assert.assertTrue(z80.getFlagPV());
+        Assert.assertFalse(z80.getFlagC());
+        
         
         
     }
