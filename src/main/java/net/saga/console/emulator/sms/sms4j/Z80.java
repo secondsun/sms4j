@@ -81,12 +81,46 @@ public class Z80 {
                 registerB.setValue(memory[programCounter++]);
                 cycleCountDown += 10;
                 break;
-            case 0x03: { //Incr BC 6 cycles
-                int bc = ((registerB.getValue() << 8) | registerC.getValue());
-                bc++;
-                registerB.setValue((bc & 0xFF00) >> 8);
-                registerC.setValue(bc);
+            case 0x03: //Incr BC 6 cycles
+                inc16(registerB, registerC);
                 cycleCountDown += 6;
+                break;
+            case 0x13: //Incr BC 6 cycles
+                inc16(registerD, registerE);
+                cycleCountDown += 6;
+                break;
+            case 0x23: //Incr BC 6 cycles
+                inc16(registerH, registerL);
+                cycleCountDown += 6;
+                break;
+            case 0x33: //Incr BC 6 cycles
+                stackPointer++;
+                cycleCountDown += 6;
+                break;
+            case 0x0C: {
+                increment(registerC);
+                cycleCountDown += 4;
+                break;
+            }
+            
+            case 0x2C: {
+                increment(registerL);
+                cycleCountDown += 4;
+                break;
+            }
+            case 0x24: {
+                increment(registerH);
+                cycleCountDown += 4;
+                break;
+            }
+            case 0x1C: {
+                increment(registerE);
+                cycleCountDown += 4;
+                break;
+            }
+            case 0x14: {
+                increment(registerD);
+                cycleCountDown += 4;
                 break;
             }
             case 0x04: {//Incr B 4 cycles, affects f register
@@ -432,7 +466,7 @@ public class Z80 {
 
     public boolean getFlagS() {
         return (registerF.getValueAsByte() & 0x80) > 0;
-        
+
     }
 
     public boolean getFlagZ() {
@@ -443,11 +477,10 @@ public class Z80 {
         return (registerF.getValueAsByte() & 0x10) > 0;
     }
 
-    
     public boolean getFlagPV() {
         return (registerF.getValueAsByte() & 0x04) > 0;
     }
-    
+
     public boolean getFlagN() {
         return (registerF.getValueAsByte() & 0x02) > 0;
     }
@@ -475,7 +508,7 @@ public class Z80 {
         byte b = register.getValueAsByte();
         if (b < 0) {//different signs, may never overflow
             setVOverflow(false);
-        } else if ((byte)(b + 1) < 0) {//b+1 overflows to negative
+        } else if ((byte) (b + 1) < 0) {//b+1 overflows to negative
             setVOverflow(true);
         }
 
@@ -486,6 +519,13 @@ public class Z80 {
         setSign(((byte) b) < 0);
         register.setValue(b);
         setSubtractFlag(false);
+    }
+
+    private void inc16(Register registerB, Register registerC) {
+        int bc = ((registerB.getValue() << 8) | registerC.getValue());
+        bc++;
+        registerB.setValue((bc & 0xFF00) >> 8);
+        registerC.setValue(bc);
     }
 
 }
