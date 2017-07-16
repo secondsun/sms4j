@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package net.saga.console.emulator.sms.sms4j;
+package net.saga.console.emulator.sms.sms4j.z80;
 
 /**
  *
@@ -26,29 +26,36 @@ package net.saga.console.emulator.sms.sms4j;
  */
 public class Z80 {
 
-    private final Register registerA = new Register();
-    private final Register registerB = new Register();
-    private final Register registerC = new Register();
-    private final Register registerD = new Register();
-    private final Register registerE = new Register();
-    private final Register registerF = new Register();//S Z X H X P/V N C
-    private final Register registerH = new Register();
-    private final Register registerL = new Register();
+    private final EightBitDirectRegister registerA = new EightBitDirectRegister();
+    private final EightBitDirectRegister registerB = new EightBitDirectRegister();
+    private final EightBitDirectRegister registerC = new EightBitDirectRegister();
+    private final EightBitDirectRegister registerD = new EightBitDirectRegister();
+    private final EightBitDirectRegister registerE = new EightBitDirectRegister();
+    private final EightBitDirectRegister registerF = new EightBitDirectRegister();//S Z X H X P/V N C
+    private final EightBitDirectRegister registerH = new EightBitDirectRegister();
+    private final EightBitDirectRegister registerL = new EightBitDirectRegister();
 
-    private Register registerA_alt;
-    private Register registerB_alt;
-    private Register registerC_alt;
-    private Register registerD_alt;
-    private Register registerE_alt;
-    private Register registerF_alt;
-    private Register registerH_alt;
-    private Register registerL_alt;
+    private final SixteenBitCombinedRegister registerHL = new SixteenBitCombinedRegister(registerH, registerL);
+    private final SixteenBitCombinedRegister registerBC = new SixteenBitCombinedRegister(registerB, registerC);
+    private final SixteenBitCombinedRegister registerDE = new SixteenBitCombinedRegister(registerD, registerE);
+    private final SixteenBitCombinedRegister registerAF = new SixteenBitCombinedRegister(registerA, registerF);
+
+    private MemoryRegister memoryRegisterHL;
+
+    private EightBitDirectRegister registerA_alt;
+    private EightBitDirectRegister registerB_alt;
+    private EightBitDirectRegister registerC_alt;
+    private EightBitDirectRegister registerD_alt;
+    private EightBitDirectRegister registerE_alt;
+    private EightBitDirectRegister registerF_alt;
+    private EightBitDirectRegister registerH_alt;
+    private EightBitDirectRegister registerL_alt;
 
     private int interruptVector;
     private int memoryRefresh;
     private int indexRegisterIX;
     private int indexRegisterIY;
-    private int stackPointer;
+    private SixteenBitDirectRegister stackPointer = new SixteenBitDirectRegister();
     private int programCounter;
     private byte[] memory;
 
@@ -63,6 +70,7 @@ public class Z80 {
     }
 
     public void setMemory(byte[] memory) {
+        memoryRegisterHL = new MemoryRegister(memory, registerHL);
         this.memory = memory;
     }
 
@@ -94,7 +102,7 @@ public class Z80 {
                 cycleCountDown += 6;
                 break;
             case 0x33: //Incr BC 6 cycles
-                stackPointer++;
+                stackPointer.postIncrement();
                 cycleCountDown += 6;
                 break;
             case 0x0C: {
@@ -102,7 +110,7 @@ public class Z80 {
                 cycleCountDown += 4;
                 break;
             }
-            
+
             case 0x2C: {
                 increment(registerL);
                 cycleCountDown += 4;
@@ -167,7 +175,7 @@ public class Z80 {
                 cycleCountDown += 10;
                 break;
             case 0x31:
-                stackPointer = ((0xFF & memory[programCounter++]) | ((0xFF00 & (memory[programCounter++]) << 8))) & 0xFFFF;
+                stackPointer.setValue(((0xFF & memory[programCounter++]) | ((0xFF00 & (memory[programCounter++]) << 8))) & 0xFFFF);
                 cycleCountDown += 10;
                 break;
             case 0x40:
@@ -408,8 +416,12 @@ public class Z80 {
         return registerA.getValueAsByte();
     }
 
-    public int getSP() {
-        return 0xFFFF & stackPointer;
+    public int getSPValue() {
+        return stackPointer.getValue();
+    }
+
+    public SixteenBitDirectRegister getSP() {
+        return stackPointer;
     }
 
     public byte getC() {
@@ -504,7 +516,7 @@ public class Z80 {
         return registerF.getValue();
     }
 
-    private void increment(Register register) {
+    private void increment(EightBitDirectRegister register) {
         byte b = register.getValueAsByte();
         if (b < 0) {//different signs, may never overflow
             setVOverflow(false);
@@ -521,11 +533,69 @@ public class Z80 {
         setSubtractFlag(false);
     }
 
-    private void inc16(Register registerB, Register registerC) {
+    private void inc16(EightBitDirectRegister registerB, EightBitDirectRegister registerC) {
         int bc = ((registerB.getValue() << 8) | registerC.getValue());
         bc++;
         registerB.setValue((bc & 0xFF00) >> 8);
         registerC.setValue(bc);
     }
+
+    public EightBitDirectRegister getRegisterA() {
+        return registerA;
+    }
+
+    public EightBitDirectRegister getRegisterB() {
+        return registerB;
+    }
+
+    public EightBitDirectRegister getRegisterC() {
+        return registerC;
+    }
+
+    public EightBitDirectRegister getRegisterD() {
+        return registerD;
+    }
+
+    public EightBitDirectRegister getRegisterE() {
+        return registerE;
+    }
+
+    public EightBitDirectRegister getRegisterF() {
+        return registerF;
+    }
+
+    public EightBitDirectRegister getRegisterH() {
+        return registerH;
+    }
+
+    public EightBitDirectRegister getRegisterL() {
+        return registerL;
+    }
+
+    public byte getValueAtRegisterHL() {
+        return (byte) (memoryRegisterHL.getValue() & 0xFF);
+    }
+
+    public Register getMemoryRegisterHL() {
+        return memoryRegisterHL;
+    }
+
+    public SixteenBitCombinedRegister getRegisterHL() {
+        return registerHL;
+    }
+
+    public SixteenBitCombinedRegister getRegisterBC() {
+        return registerBC;
+    }
+
+    public SixteenBitCombinedRegister getRegisterDE() {
+        return registerDE;
+    }
+
+    public SixteenBitCombinedRegister getRegisterAF() {
+        return registerAF;
+    }
+    
+    
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 summers.
+ * Copyright (C) 2017 summers.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,12 +16,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package net.saga.console.emulator.sms.sms4j;
+package net.saga.console.emulator.sms.sms4j.instruction;
 
 /**
  *
- * @author summers
+ * An instruction execution is a bit of code which handles the, well, execution
+ * of an instruction.
+ * 
+ * For instance, if the Instruction was INC rB then the execute method would 
+ * increment register B and return the number of cycles it takes.
  */
-public class Memory {
+public interface InstructionExecution {
+
+    public int exec();
     
 }

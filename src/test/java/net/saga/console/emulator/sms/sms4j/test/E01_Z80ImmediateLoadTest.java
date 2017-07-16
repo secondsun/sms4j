@@ -1,6 +1,6 @@
 package net.saga.console.emulator.sms.sms4j.test;
 
-import net.saga.console.emulator.sms.sms4j.Z80;
+import net.saga.console.emulator.sms.sms4j.z80.Z80;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -127,7 +127,7 @@ public class E01_Z80ImmediateLoadTest {
         z80.setMemory(new byte[]{(byte)0x31, (byte)0xD0, (byte)0x0D}); //Load into SP value (byte)0x0DD0
         z80.cycle(10);
         Assert.assertEquals(3, z80.getPC());
-        Assert.assertEquals(0x0DD0, z80.getSP());
+        Assert.assertEquals(0x0DD0, z80.getSPValue());
 
     }
 

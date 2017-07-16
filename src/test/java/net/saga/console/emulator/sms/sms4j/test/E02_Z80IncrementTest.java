@@ -1,8 +1,7 @@
 package net.saga.console.emulator.sms.sms4j.test;
 
-import net.saga.console.emulator.sms.sms4j.Z80;
+import net.saga.console.emulator.sms.sms4j.z80.Z80;
 import org.junit.Assert;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -50,7 +49,7 @@ public class E02_Z80IncrementTest {
         //INCR BC by 1
         z80.cycle(16);
         Assert.assertEquals(4, z80.getPC());
-        Assert.assertEquals(0x0200, z80.getSP());
+        Assert.assertEquals(0x0200, z80.getSPValue());
     }
 
     @Test
