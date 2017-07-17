@@ -18,12 +18,16 @@
  */
 package net.saga.console.emulator.sms.sms4j;
 
+import net.saga.console.emulator.sms.sms4j.instruction.LoadFromRegisterEightBit;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import net.saga.console.emulator.sms.sms4j.instruction.Condition;
+import net.saga.console.emulator.sms.sms4j.instruction.IncrementRegisterInstructionEightBit;
+import net.saga.console.emulator.sms.sms4j.instruction.IncrementRegisterInstructionSixteenBit;
 import net.saga.console.emulator.sms.sms4j.instruction.InstructionExecution;
+import net.saga.console.emulator.sms.sms4j.instruction.LoadImmediate;
 import net.saga.console.emulator.sms.sms4j.instruction.Noop;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 
@@ -48,34 +52,39 @@ public class InstructionDecoder {
         buildTables();
     }
 
-    public InstructionExecution decode(int firstByte, int... sequence) {
+    public InstructionExecution decode(Z80 z80) {
+        byte firstByte = z80.readProgramByte();
         boolean hasPrefix = PREFIX_BYTES.contains(firstByte);
 
         if (hasPrefix) {
-            return decodePrefixedInstruction(firstByte, sequence);
+            return decodePrefixedInstruction(firstByte, z80);
         } else {
-            return decodeOpcode(firstByte, sequence);
+            return decodeOpcode(firstByte, z80);
         }
 
     }
 
-    private InstructionExecution decodePrefixedInstruction(int prefix, int[] sequence) {
+    private InstructionExecution decodePrefixedInstruction(int prefix, Z80 z80) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private InstructionExecution decodeOpcode(int opcode, int[] sequence) {
+    private InstructionExecution decodeOpcode(int opcode, Z80 z80) {
         int z = opcode & 0b111;
-        int y = opcode & 0b111000 >> 3;
-        int x = opcode & 0b11000000 >> 6;
+        int y = (opcode & 0b111000) >> 3;
+        int x = (opcode & 0b11000000) >> 6;
         int q = y % 2;
         int p = y >> 1;
 
         switch (x) {
             case 0:
-                return decodeUnprefixedOpCodeX0(y, z, q, p, sequence);
+                return decodeUnprefixedOpCodeX0(y, z, q, p,  z80);
             case 1:
+                return decodeUnprefixedOpCodeX1(y, z, q, p, z80);
             case 2:
+                //alu[y] r[z]
+                throw new IllegalStateException("Not implemented");
             case 3:
+                return decodeUnprefixedOpCodeX3(y, z, q, p, z80);
             default:
                 return NOOP;
         }
@@ -127,20 +136,177 @@ public class InstructionDecoder {
 
     }
 
-    private InstructionExecution decodeUnprefixedOpCodeX0(int y, int z, int q, int p, int[] sequence) {
+    private InstructionExecution decodeUnprefixedOpCodeX0(int y, int z, int q, int p, Z80 z80) {
         switch (z) {
             case 0:
+                switch (y) {
+                    case 0:
+                        return NOOP;
+                    case 1:
+                    //EX AF, AF'
+                    case 2:
+                    //DJNZ d
+                    case 3:
+                    //JR d
+                    default:
+                        //JR cc[y-4], d
+                        throw new IllegalStateException("Not implemented");
+                }
             case 1:
+                switch (q) {
+                    case 0:
+                        return new LoadImmediate(tableRP[p], read16(z80));                    
+                    case 1:
+                    //ADD HL, rp[p]
+                }
             case 2:
+                switch (q) {
+                    case 0:
+                        switch (p) {
+                            case 0:
+                                //LD (BC), A
+                            case 1:
+                                //LD (DE), A
+                            case 2:
+                                //LD (nn), HL
+                            case 3:
+                                //LD (nn), A
+                            default:
+                                throw new IllegalStateException("Not implemented");
+                        }
+                    case 1:
+                        switch (p) {
+                            case 0:
+                                //LD A, (BC)
+                            case 1:
+                                //LD A, (DE)
+                            case 2:
+                                //LD HL, (nn)
+                            case 3:
+                                //LD A, (nn)
+                            default:
+                                throw new IllegalStateException("Not implemented");
+                        }
+                }
             case 3:
+                switch (q) {
+                    case 0:
+                        return new IncrementRegisterInstructionSixteenBit( tableRP[p], z80);
+                    case 1:
+                    //DEC rp[p]
+                }
             case 4:
+                return new IncrementRegisterInstructionEightBit(tableR[y], z80);
             case 5:
+                //DEC r[y]
             case 6:
-            case 7:
+                return new LoadImmediate(tableR[y], z80.readProgramByte());
+            case 7: //Assorted operations on accumulator/flags
+                switch (y) {
+                    case 0:
+                        //RLCA
+                    case 1:
+                        //RRCA
+                    case 2:
+                        //RLA
+                    case 3: 
+                        //RRA
+                    case 4:
+                        //DAA
+                    case 5:
+                        //CPL
+                    case 6:
+                        //SCF
+                    case 7:
+                        //CCF
+                }
             default:
-                return NOOP;
-
+                throw new IllegalStateException("Not implemented");
         }
+    }
+
+    private InstructionExecution decodeUnprefixedOpCodeX1(int y, int z, int q, int p, Z80 z80) {
+        if (z == 6 && y == 6) {
+            throw new RuntimeException("HALT");
+        } else {
+            return new LoadFromRegisterEightBit(tableR[y], tableR[z]);
+        }
+    }
+
+    private InstructionExecution decodeUnprefixedOpCodeX3(int y, int z, int q, int p, Z80 z80) {
+        switch (z) {
+            case 0:
+                //RET cc[y]
+            case 1: 
+                switch (q) {
+                    case 0:
+                        //pop rp2[p]
+                    case 1:
+                        switch (p) {
+                            case 0:
+                                //RET
+                            case 1:
+                                //EXX
+                            case 2:
+                                //JP HL
+                            case 3:
+                                //LD SP,HL
+                                
+                        }
+                }
+            case 2:
+                //	JP cc[y], nn
+            case 3:
+                switch (y) {
+                    case 0 :
+                        //JP nn
+                    case 1:
+                        //(CB prefix)
+                    case 2:
+                        //OUT (n), A
+                    case 3:
+                        //IN A, (n)
+                    case 4:
+                        //EX (SP), HL
+                    case 5:
+                        //EX DE, HL
+                    case 6:
+                        //DI
+                    case 7:
+                        //EI
+                }
+            case 4:
+                //CALL cc[y], nn
+            case 5:
+                switch (q) {
+                    case 0:
+                        //PUSH rp2[p]
+                    case 1:
+                        switch (p) {
+                            case 0:
+                                //CALL nn
+                            case 1:
+                                //(DD prefix)
+                            case 2:
+                                //(ED prefix)
+                            case 3:
+                                //(FD prefix)
+                        }
+                    
+                }
+            case 6:
+                //alu[y] n
+            case 7:
+                //RST y*8 Restart
+            default:
+                throw new IllegalStateException("Not supported");
+        }
+    }
+    
+    private int read16(Z80 z80) {
+        byte low = z80.readProgramByte();
+        byte high  =z80.readProgramByte();
+        return ((high << 8) & 0xFF00) | (low & 0xFF);
     }
 
 }

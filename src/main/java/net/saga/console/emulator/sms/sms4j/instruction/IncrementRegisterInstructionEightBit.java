@@ -19,25 +19,39 @@
 package net.saga.console.emulator.sms.sms4j.instruction;
 
 import net.saga.console.emulator.sms.sms4j.z80.Register;
+import net.saga.console.emulator.sms.sms4j.z80.Z80;
 
 /**
  *
  * @author summers
  */
-public class LoadImmediate implements InstructionExecution {
+public class IncrementRegisterInstructionEightBit implements InstructionExecution {
 
-    public final Register destinationDegister;
-    public final int valueToLoad;
-
-    public LoadImmediate(Register destinationDegister, int valueToLoad) {
-        this.destinationDegister = destinationDegister;
-        this.valueToLoad = valueToLoad;
+    private final Register<Byte> register;
+    private final Z80 z80;
+    
+    public IncrementRegisterInstructionEightBit(Register<Byte> register, Z80 z80) {
+        this.register = register;
+        this.z80 = z80;
     }
     
     @Override
     public int exec() {
-        destinationDegister.setValue(valueToLoad);
-        return 10;
+        byte b = (byte) register.getValue();
+        if (b < 0) {//different signs, may never overflow
+            z80.setVOverflow(false);
+        } else if ((byte) (b + 1) < 0) {//b+1 overflows to negative
+            z80.setVOverflow(true);
+        }
+
+        b++;
+
+        z80.setHalfCarry(z80.checkHalfCarry((byte) register.getValue(), b));
+        z80.setZero(b == 0);
+        z80.setSign(((byte) b) < 0);
+        register.setValue(b);
+        z80.setSubtractFlag(false);
+        return 4;
     }
     
 }

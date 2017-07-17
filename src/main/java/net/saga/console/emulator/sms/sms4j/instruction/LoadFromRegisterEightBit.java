@@ -24,20 +24,19 @@ import net.saga.console.emulator.sms.sms4j.z80.Register;
  *
  * @author summers
  */
-public class LoadImmediate implements InstructionExecution {
+public class LoadFromRegisterEightBit implements InstructionExecution {
 
-    public final Register destinationDegister;
-    public final int valueToLoad;
-
-    public LoadImmediate(Register destinationDegister, int valueToLoad) {
-        this.destinationDegister = destinationDegister;
-        this.valueToLoad = valueToLoad;
-    }
+    private final Register<Byte> registerLeft, registerRight;
     
+    public LoadFromRegisterEightBit(Register register, Register register0) {
+        this.registerLeft = register;
+        this.registerRight = register0;
+    }
+
     @Override
     public int exec() {
-        destinationDegister.setValue(valueToLoad);
-        return 10;
+        registerLeft.setValue(registerRight.getValue());
+        return 4;
     }
     
 }

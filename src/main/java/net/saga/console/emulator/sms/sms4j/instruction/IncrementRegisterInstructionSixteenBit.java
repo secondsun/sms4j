@@ -19,25 +19,29 @@
 package net.saga.console.emulator.sms.sms4j.instruction;
 
 import net.saga.console.emulator.sms.sms4j.z80.Register;
+import net.saga.console.emulator.sms.sms4j.z80.Z80;
 
 /**
  *
  * @author summers
  */
-public class LoadImmediate implements InstructionExecution {
+public class IncrementRegisterInstructionSixteenBit implements InstructionExecution {
 
-    public final Register destinationDegister;
-    public final int valueToLoad;
-
-    public LoadImmediate(Register destinationDegister, int valueToLoad) {
-        this.destinationDegister = destinationDegister;
-        this.valueToLoad = valueToLoad;
+    private final Register<Short> register;
+    private final Z80 z80;
+    
+    public IncrementRegisterInstructionSixteenBit(Register<Short> register, Z80 z80) {
+        this.register = register;
+        this.z80 = z80;
     }
     
     @Override
     public int exec() {
-        destinationDegister.setValue(valueToLoad);
-        return 10;
+        int firstValue = register.getValue();
+        int newValue = firstValue + 1;
+        
+        register.setValue(newValue);
+        return 6;
     }
     
 }

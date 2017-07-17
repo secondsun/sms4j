@@ -5,7 +5,7 @@ package net.saga.console.emulator.sms.sms4j.z80;
  *
  * @author summers
  */
-public class EightBitDirectRegister implements Register {
+public class EightBitDirectRegister implements Register<Byte> {
     
     private int value;//Registers are 8 bits.  We will use masking for get/set operations.
 

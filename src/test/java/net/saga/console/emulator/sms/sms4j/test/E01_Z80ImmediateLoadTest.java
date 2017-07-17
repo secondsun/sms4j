@@ -33,6 +33,7 @@ public class E01_Z80ImmediateLoadTest {
         Assert.assertEquals(3, z80.getPC());
     }
 
+    
     /**
      * This test will run through the LD instructions which set a immediate
      * value to a register. These are multi byte instructions.
@@ -103,10 +104,10 @@ public class E01_Z80ImmediateLoadTest {
         //Test 16 bit loads into various registers
         Z80 z80 = new Z80();
         z80.setPC(0);
-        z80.setMemory(new byte[]{(byte)0x01, (byte)0xFF, (byte)0xFF}); //Load into BC value (byte)0xFFFF
+        z80.setMemory(new byte[]{(byte)0x01, (byte)0x01, (byte)0x02}); //Load into BC value (byte)0xFFFF
         z80.cycle(10);
         Assert.assertEquals(3, z80.getPC());
-        Assert.assertEquals(0xFFFF, z80.getBC());
+        Assert.assertEquals(0x0201, z80.getBC());
 
         z80 = new Z80();
         z80.setPC(0);

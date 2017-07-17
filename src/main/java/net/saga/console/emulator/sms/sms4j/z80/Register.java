@@ -21,8 +21,9 @@ package net.saga.console.emulator.sms.sms4j.z80;
 /**
  *
  * @author summers
+ * @param <T> Size of the Register
  */
-public interface Register {
+public interface Register<T extends Number> {
 
     /**
      * Returns the value of this register, will be 0-255.

@@ -23,7 +23,7 @@ package net.saga.console.emulator.sms.sms4j.z80;
  * 
  * @author summers
  */
-public class SixteenBitCombinedRegister implements Register {
+public class SixteenBitCombinedRegister implements Register<Short> {
 
     private final EightBitDirectRegister highRegister, lowRegister;
 
@@ -34,7 +34,7 @@ public class SixteenBitCombinedRegister implements Register {
 
     @Override
     public int getValue() {
-        return ((highRegister.getValueAsByte() << 8) | lowRegister.getValueAsByte());
+        return (((highRegister.getValue() << 8) & 0x0FF00) | lowRegister.getValue()) & 0x0FFFF;
     }
 
 

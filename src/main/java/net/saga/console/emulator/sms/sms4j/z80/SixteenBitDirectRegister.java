@@ -5,7 +5,7 @@ package net.saga.console.emulator.sms.sms4j.z80;
  *
  * @author summers
  */
-public class SixteenBitDirectRegister implements Register {
+public class SixteenBitDirectRegister implements Register<Short> {
     
     private int value = 0;//Registers are 16 bits.  We will use masking for get/set operations.
 
