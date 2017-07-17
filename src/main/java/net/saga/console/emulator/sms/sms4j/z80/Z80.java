@@ -211,23 +211,6 @@ public class Z80 {
         return (registerF.getValueAsByte() & 0x01) > 0;
     }
 
-    /**
-     * Check if there is a carry from bit 3 to bit 4
-     *
-     * @param original
-     * @param updated
-     * @return true on a half carry
-     */
-    public  boolean checkHalfCarry(byte original, byte updated) {
-        return (0x0F & original) == 0;
-    }
-
-    public int getFlags() {
-        return registerF.getValue();
-    }
-
-
-
     public EightBitDirectRegister getRegisterA() {
         return registerA;
     }

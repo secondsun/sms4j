@@ -46,7 +46,7 @@ public class IncrementRegisterInstructionEightBit implements InstructionExecutio
 
         b++;
 
-        z80.setHalfCarry(z80.checkHalfCarry((byte) register.getValue(), b));
+        z80.setHalfCarry(((byte) register.getValue() & 0xF) == 0xF);
         z80.setZero(b == 0);
         z80.setSign(((byte) b) < 0);
         register.setValue(b);

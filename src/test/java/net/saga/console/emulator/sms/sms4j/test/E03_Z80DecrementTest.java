@@ -90,7 +90,7 @@ public class E03_Z80DecrementTest {
         assertEquals(byteSum < 0, z80.getFlagS());
         assertEquals((0x0F & loadValue) == 0, z80.getFlagH());
         
-        boolean overflow = loadValue == 0x80;
+        boolean overflow = (loadValue & 0xFF)== 0x80;
         assertEquals(overflow, z80.getFlagPV());
         assertEquals(trueSum > 0xFF, z80.getFlagC());
 

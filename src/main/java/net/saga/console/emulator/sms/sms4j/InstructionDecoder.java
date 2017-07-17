@@ -152,7 +152,7 @@ public class InstructionDecoder {
                     case 0:
                         return new LoadImmediate(tableRP[p], read16(z80));                    
                     case 1:
-                    //ADD HL, rp[p]
+                        return new AddToHL(tableRP[p], z80);
                 }
             case 2:
                 switch (q) {
