@@ -22,8 +22,8 @@ import net.saga.console.emulator.sms.sms4j.z80.EightBitDirectRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 import net.saga.console.emulator.sms.sms4j.z80.SixteenBitCombinedRegister;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

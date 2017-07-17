@@ -219,7 +219,7 @@ public class Z80 {
      * @return true on a half carry
      */
     public  boolean checkHalfCarry(byte original, byte updated) {
-        return ((original & 0b00001000) != (updated & 0b00001000));
+        return (0x0F & original) == 0;
     }
 
     public int getFlags() {

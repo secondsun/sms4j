@@ -18,17 +18,12 @@
  */
 package net.saga.console.emulator.sms.sms4j;
 
-import net.saga.console.emulator.sms.sms4j.instruction.LoadFromRegisterEightBit;
+import net.saga.console.emulator.sms.sms4j.instruction.*;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import net.saga.console.emulator.sms.sms4j.instruction.Condition;
-import net.saga.console.emulator.sms.sms4j.instruction.IncrementRegisterInstructionEightBit;
-import net.saga.console.emulator.sms.sms4j.instruction.IncrementRegisterInstructionSixteenBit;
-import net.saga.console.emulator.sms.sms4j.instruction.InstructionExecution;
-import net.saga.console.emulator.sms.sms4j.instruction.LoadImmediate;
-import net.saga.console.emulator.sms.sms4j.instruction.Noop;
+
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 
 /**
@@ -193,12 +188,12 @@ public class InstructionDecoder {
                     case 0:
                         return new IncrementRegisterInstructionSixteenBit( tableRP[p], z80);
                     case 1:
-                    //DEC rp[p]
+                        return new DecrementRegisterInstructionSixteenBit( tableRP[p], z80);
                 }
             case 4:
                 return new IncrementRegisterInstructionEightBit(tableR[y], z80);
             case 5:
-                //DEC r[y]
+                return new DecrementRegisterInstructionEightBit( tableR[y], z80);
             case 6:
                 return new LoadImmediate(tableR[y], z80.readProgramByte());
             case 7: //Assorted operations on accumulator/flags
