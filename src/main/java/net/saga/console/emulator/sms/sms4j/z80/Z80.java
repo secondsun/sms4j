@@ -274,7 +274,13 @@ public class Z80 {
     public byte readProgramByte() {
         return (byte) (memory[programCounter++] & 0x00FF);
     }
-    
-    
 
+
+    public int readMemory(int address) {
+        return memory[address] & 0xFF;
+    }
+
+    public void writeMemory(int destAaddress, int value) {
+        memory[destAaddress & 0xFFFF] = (byte)(0xFF & value);
+    }
 }

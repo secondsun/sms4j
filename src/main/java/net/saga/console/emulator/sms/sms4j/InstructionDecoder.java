@@ -19,12 +19,12 @@
 package net.saga.console.emulator.sms.sms4j;
 
 import net.saga.console.emulator.sms.sms4j.instruction.*;
+import net.saga.console.emulator.sms.sms4j.z80.Register;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import net.saga.console.emulator.sms.sms4j.z80.Register;
 
 /**
  *
@@ -150,7 +150,7 @@ public class InstructionDecoder {
             case 1:
                 switch (q) {
                     case 0:
-                        return new LoadImmediate(tableRP[p], read16(z80));                    
+                        return new LoadImmediate(tableRP[p], read16());
                     case 1:
                         return new AddToHL(tableRP[p], z80);
                 }
@@ -160,12 +160,16 @@ public class InstructionDecoder {
                         switch (p) {
                             case 0:
                                 //LD (BC), A
+                                return new LoadToMemory.EightBits(z80.getBC(), z80.getRegisterA(),z80, 7);
                             case 1:
                                 //LD (DE), A
+                                return new LoadToMemory.EightBits(z80.getDE(), z80.getRegisterA(),z80, 7);
                             case 2:
                                 //LD (nn), HL
+                                return new LoadToMemory.SixteenBits(read16(), z80.getRegisterHL(),z80, 16);
                             case 3:
                                 //LD (nn), A
+                                return new LoadToMemory.EightBits(read16(), z80.getRegisterA(),z80, 13);
                             default:
                                 throw new IllegalStateException("Not implemented");
                         }
@@ -173,12 +177,16 @@ public class InstructionDecoder {
                         switch (p) {
                             case 0:
                                 //LD A, (BC)
+                                return new LoadFromMemory.EightBits(z80.getRegisterA(), z80.getBC(), z80, 7);
                             case 1:
                                 //LD A, (DE)
+                                return new LoadFromMemory.EightBits(z80.getRegisterA(), z80.getDE(), z80,7);
                             case 2:
                                 //LD HL, (nn)
+                                return new LoadFromMemory.SixteenBits(z80.getRegisterHL(), read16(), z80,16);
                             case 3:
                                 //LD A, (nn)
+                                return new LoadFromMemory.EightBits(z80.getRegisterA(), read16(),z80, 13);
                             default:
                                 throw new IllegalStateException("Not implemented");
                         }
@@ -298,7 +306,7 @@ public class InstructionDecoder {
         }
     }
     
-    private int read16(Z80 z80) {
+    private int read16() {
         byte low = z80.readProgramByte();
         byte high  =z80.readProgramByte();
         return ((high << 8) & 0xFF00) | (low & 0xFF);
