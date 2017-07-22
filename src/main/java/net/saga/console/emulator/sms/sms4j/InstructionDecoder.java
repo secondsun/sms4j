@@ -232,7 +232,7 @@ public class InstructionDecoder {
         if (z == 6 && y == 6) {
             throw new RuntimeException("HALT");
         } else {
-            return new LoadFromRegisterEightBit(tableR[y], tableR[z]);
+            return new LoadFromRegister(tableR[y], tableR[z]);
         }
     }
 
@@ -254,6 +254,7 @@ public class InstructionDecoder {
                                 //JP HL
                             case 3:
                                 //LD SP,HL
+                                return new LoadFromRegister(z80.getSP(), z80.getRegisterHL(), 6);
                                 
                         }
                 }

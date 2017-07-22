@@ -24,19 +24,27 @@ import net.saga.console.emulator.sms.sms4j.z80.Register;
  *
  * @author summers
  */
-public class LoadFromRegisterEightBit implements InstructionExecution {
+public class LoadFromRegister implements InstructionExecution {
 
     private final Register<Byte> registerLeft, registerRight;
-    
-    public LoadFromRegisterEightBit(Register register, Register register0) {
-        this.registerLeft = register;
-        this.registerRight = register0;
+    private final static int DEFAULT_CYCLES = 4;
+
+    private final int cycles;
+
+    public LoadFromRegister(Register register, Register register0) {
+        this(register, register0, DEFAULT_CYCLES);
+    }
+
+    public LoadFromRegister(Register registerLeft, Register registerRight, int cycles) {
+        this.registerLeft = registerLeft;
+        this.registerRight = registerRight;
+        this.cycles = cycles;
     }
 
     @Override
     public int exec() {
         registerLeft.setValue(registerRight.getValue());
-        return 4;
+        return cycles;
     }
     
 }
