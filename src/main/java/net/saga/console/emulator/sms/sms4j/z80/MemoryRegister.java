@@ -35,14 +35,18 @@ public class MemoryRegister implements Register{
 
     @Override
     public int getValue() {
-        return memory[register.getValue()];
+        return memory[register.getValue()] & 0xFF;
     }
 
     @Override
     public void setValue(int value) {
         memory[register.getValue()] = (byte) (0xff & value);
     }
-    
-    
-    
+
+    @Override
+    public int getSize() {
+        return 8;
+    }
+
+
 }

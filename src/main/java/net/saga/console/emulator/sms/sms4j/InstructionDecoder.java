@@ -19,6 +19,9 @@
 package net.saga.console.emulator.sms.sms4j;
 
 import net.saga.console.emulator.sms.sms4j.instruction.*;
+import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUAction;
+import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
+import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
 
@@ -27,7 +30,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * Implementation of http://www.z80.info/decoding.htm
  *
  * @author summers
@@ -41,6 +43,7 @@ public class InstructionDecoder {
     private Register[] tableRP = new Register[4];
     private Register[] tableRP2 = new Register[4];
     private Condition[] tableCC = new Condition[8];
+    private ALUAction[] tableAlu = new ALUAction[8];
 
     public InstructionDecoder(Z80 z80) {
         this.z80 = z80;
@@ -72,12 +75,12 @@ public class InstructionDecoder {
 
         switch (x) {
             case 0:
-                return decodeUnprefixedOpCodeX0(y, z, q, p,  z80);
+                return decodeUnprefixedOpCodeX0(y, z, q, p, z80);
             case 1:
                 return decodeUnprefixedOpCodeX1(y, z, q, p, z80);
             case 2:
                 //alu[y] r[z]
-                throw new IllegalStateException("Not implemented");
+                return new AluInstruction(tableAlu[y], tableR[z], z80.getRegisterA(), z80, tableR[z] instanceof MemoryRegister ?7:4, (byte) 0xFF);
             case 3:
                 return decodeUnprefixedOpCodeX3(y, z, q, p, z80);
             default:
@@ -91,6 +94,19 @@ public class InstructionDecoder {
         buildRPTable();
         buildRP2Table();
         buildCCTable();
+        buildALUTable();
+    }
+
+    private void buildALUTable() {
+        tableAlu[0] = ALUAction.ADD_A;
+        tableAlu[1] = ALUAction.ADC_A;
+        tableAlu[2] = ALUAction.SUB;
+        tableAlu[3] = ALUAction.SBC_A;
+        tableAlu[4] = ALUAction.AND;
+        tableAlu[5] = ALUAction.XOR;
+        tableAlu[6] = ALUAction.OR;
+        tableAlu[7] = ALUAction.CP;
+
     }
 
     private void buildRP2Table() {
@@ -138,11 +154,11 @@ public class InstructionDecoder {
                     case 0:
                         return NOOP;
                     case 1:
-                    //EX AF, AF'
+                        //EX AF, AF'
                     case 2:
-                    //DJNZ d
+                        //DJNZ d
                     case 3:
-                    //JR d
+                        //JR d
                     default:
                         //JR cc[y-4], d
                         throw new IllegalStateException("Not implemented");
@@ -152,7 +168,8 @@ public class InstructionDecoder {
                     case 0:
                         return new LoadImmediate(tableRP[p], read16());
                     case 1:
-                        return new AddToHL(tableRP[p], z80);
+                        return new AluInstruction(tableAlu[0], tableRP[p], z80.getRegisterHL(), z80, 11, (byte) 0b00010011);
+                        //return new AddToHL(tableRP[p], z80);
                 }
             case 2:
                 switch (q) {
@@ -160,16 +177,16 @@ public class InstructionDecoder {
                         switch (p) {
                             case 0:
                                 //LD (BC), A
-                                return new LoadToMemory.EightBits(z80.getBC(), z80.getRegisterA(),z80, 7);
+                                return new LoadToMemory.EightBits(z80.getBC(), z80.getRegisterA(), z80, 7);
                             case 1:
                                 //LD (DE), A
-                                return new LoadToMemory.EightBits(z80.getDE(), z80.getRegisterA(),z80, 7);
+                                return new LoadToMemory.EightBits(z80.getDE(), z80.getRegisterA(), z80, 7);
                             case 2:
                                 //LD (nn), HL
-                                return new LoadToMemory.SixteenBits(read16(), z80.getRegisterHL(),z80, 16);
+                                return new LoadToMemory.SixteenBits(read16(), z80.getRegisterHL(), z80, 16);
                             case 3:
                                 //LD (nn), A
-                                return new LoadToMemory.EightBits(read16(), z80.getRegisterA(),z80, 13);
+                                return new LoadToMemory.EightBits(read16(), z80.getRegisterA(), z80, 13);
                             default:
                                 throw new IllegalStateException("Not implemented");
                         }
@@ -180,13 +197,13 @@ public class InstructionDecoder {
                                 return new LoadFromMemory.EightBits(z80.getRegisterA(), z80.getBC(), z80, 7);
                             case 1:
                                 //LD A, (DE)
-                                return new LoadFromMemory.EightBits(z80.getRegisterA(), z80.getDE(), z80,7);
+                                return new LoadFromMemory.EightBits(z80.getRegisterA(), z80.getDE(), z80, 7);
                             case 2:
                                 //LD HL, (nn)
-                                return new LoadFromMemory.SixteenBits(z80.getRegisterHL(), read16(), z80,16);
+                                return new LoadFromMemory.SixteenBits(z80.getRegisterHL(), read16(), z80, 16);
                             case 3:
                                 //LD A, (nn)
-                                return new LoadFromMemory.EightBits(z80.getRegisterA(), read16(),z80, 13);
+                                return new LoadFromMemory.EightBits(z80.getRegisterA(), read16(), z80, 13);
                             default:
                                 throw new IllegalStateException("Not implemented");
                         }
@@ -194,14 +211,14 @@ public class InstructionDecoder {
             case 3:
                 switch (q) {
                     case 0:
-                        return new IncrementRegisterInstructionSixteenBit( tableRP[p], z80);
+                        return new IncrementRegisterInstructionSixteenBit(tableRP[p], z80);
                     case 1:
-                        return new DecrementRegisterInstructionSixteenBit( tableRP[p], z80);
+                        return new DecrementRegisterInstructionSixteenBit(tableRP[p], z80);
                 }
             case 4:
                 return new IncrementRegisterInstructionEightBit(tableR[y], z80);
             case 5:
-                return new DecrementRegisterInstructionEightBit( tableR[y], z80);
+                return new DecrementRegisterInstructionEightBit(tableR[y], z80);
             case 6:
                 return new LoadImmediate(tableR[y], z80.readProgramByte());
             case 7: //Assorted operations on accumulator/flags
@@ -212,7 +229,7 @@ public class InstructionDecoder {
                         //RRCA
                     case 2:
                         //RLA
-                    case 3: 
+                    case 3:
                         //RRA
                     case 4:
                         //DAA
@@ -240,7 +257,7 @@ public class InstructionDecoder {
         switch (z) {
             case 0:
                 //RET cc[y]
-            case 1: 
+            case 1:
                 switch (q) {
                     case 0:
                         //pop rp2[p]
@@ -255,14 +272,14 @@ public class InstructionDecoder {
                             case 3:
                                 //LD SP,HL
                                 return new LoadFromRegister(z80.getSP(), z80.getRegisterHL(), 6);
-                                
+
                         }
                 }
             case 2:
                 //	JP cc[y], nn
             case 3:
                 switch (y) {
-                    case 0 :
+                    case 0:
                         //JP nn
                     case 1:
                         //(CB prefix)
@@ -296,7 +313,7 @@ public class InstructionDecoder {
                             case 3:
                                 //(FD prefix)
                         }
-                    
+
                 }
             case 6:
                 //alu[y] n
@@ -306,10 +323,10 @@ public class InstructionDecoder {
                 throw new IllegalStateException("Not supported");
         }
     }
-    
+
     private int read16() {
         byte low = z80.readProgramByte();
-        byte high  =z80.readProgramByte();
+        byte high = z80.readProgramByte();
         return ((high << 8) & 0xFF00) | (low & 0xFF);
     }
 

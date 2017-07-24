@@ -26,6 +26,9 @@ public class SixteenBitDirectRegister implements Register<Short> {
     public void setValue(int value) {
         this.value = value & 0xFFFF;
     }
-    
-    
+
+    @Override
+    public int getSize() {
+        return 16;
+    }
 }

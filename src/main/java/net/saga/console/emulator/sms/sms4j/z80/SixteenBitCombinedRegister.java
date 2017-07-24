@@ -43,7 +43,11 @@ public class SixteenBitCombinedRegister implements Register<Short> {
         lowRegister.setValue(value & 0x00ff);
         highRegister.setValue((value & 0xff00) >> 8);
     }
-            
-    
+
+
+    @Override
+    public int getSize() {
+        return 16;
+    }
     
 }

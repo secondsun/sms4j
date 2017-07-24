@@ -157,33 +157,33 @@ public class Z80 {
     }
 
     public void setCarry(boolean b) {
-        byte maskedF = (byte) (registerF.getValue() & 0xFE);
-        registerF.setValue((maskedF | (b ? 1 : 0)));
+        byte maskedF = (byte) (registerF.getValue() & Flags.FLAG_C_CARRY_CLEAR);
+        registerF.setValue((maskedF | (b ? Flags.FLAG_C_CARRY_MASK : 0)));
     }
 
     public void setHalfCarry(boolean b) {
-        byte maskedF = (byte) (registerF.getValue() & 0b11101111);
-        registerF.setValue(maskedF | (b ? 0b10000 : 0));
+        byte maskedF = (byte) (registerF.getValue() & Flags.FLAG_H_HALFCARRY_CLEAR);
+        registerF.setValue(maskedF | (b ? Flags.FLAG_H_HALFCARRY_MASK : 0));
     }
 
     public void setZero(boolean b) {
-        byte maskedF = (byte) (registerF.getValue() & 0b10111111);
-        registerF.setValue(maskedF | (b ? 0b1000000 : 0));
+        byte maskedF = (byte) (registerF.getValue() & Flags.FLAG_Z_ZERO_CLEAR);
+        registerF.setValue(maskedF | (b ? Flags.FLAG_Z_ZERO_MASK: 0));
     }
 
     public void setSign(boolean b) {
-        byte maskedF = (byte) (registerF.getValue() & 0b01111111);
-        registerF.setValue(maskedF | (b ? 0b10000000 : 0));
+        byte maskedF = (byte) (registerF.getValue() & Flags.FLAG_S_SIGN_CLEAR);
+        registerF.setValue(maskedF | (b ? Flags.FLAG_S_SIGN_MASK : 0));
     }
 
     public void setSubtractFlag(boolean b) {
-        byte maskedF = (byte) (registerF.getValue() & 0b11111101);
-        registerF.setValue(maskedF | (b ? 0b10 : 0b00));
+        byte maskedF = (byte) (registerF.getValue() & Flags.FLAG_N_SUBTRACT_CLEAR);
+        registerF.setValue(maskedF | (b ? Flags.FLAG_N_SUBTRACT_MASK : 0));
     }
 
     public void setVOverflow(boolean b) {
-        byte maskedF = (byte) (registerF.getValue() & 0b11111011);
-        registerF.setValue(maskedF | (b ? 0b100 : 0b000));
+        byte maskedF = (byte) (registerF.getValue() & Flags.FLAG_PV_OVERFLOW_CLEAR);
+        registerF.setValue(maskedF | (b ? Flags.FLAG_PV_OVERFLOW_MASK : 0));
     }
 
     public boolean getFlagS() {
@@ -196,7 +196,7 @@ public class Z80 {
     }
 
     public boolean getFlagH() {
-        return (registerF.getValueAsByte() & 0x10) > 0;
+        return (registerF.getValueAsByte() & Flags.FLAG_H_HALFCARRY_MASK) > 0;
     }
 
     public boolean getFlagPV() {

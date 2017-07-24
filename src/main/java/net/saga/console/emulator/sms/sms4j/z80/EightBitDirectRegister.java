@@ -35,6 +35,11 @@ public class EightBitDirectRegister implements Register<Byte> {
     public void setValue(int value) {
         this.value = value & 0xFF;
     }
-    
-    
+
+    @Override
+    public int getSize() {
+        return 8;
+    }
+
+
 }

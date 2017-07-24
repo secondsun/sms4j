@@ -38,16 +38,11 @@ public interface Register<T extends Number> {
      */
     void setValue(int value);
 
-    default int postIncrement() {
-        int value = getValue();
-        setValue(value + 1);
-        return value;
-    }
-    
-    default int preIncrement() {
-        int value = getValue();
-        setValue(value + 1);
-        return getValue();
-    }
+    /**
+     * Registers may be 8 bit or 16 bit.  This is important for future calculations.
+     *
+     * @return 8 or 16, the number of bits
+     */
+    int getSize();
     
 }
