@@ -28,16 +28,18 @@ public class LoadImmediate implements InstructionExecution {
 
     public final Register destinationDegister;
     public final int valueToLoad;
+    private final int cycles;
 
-    public LoadImmediate(Register destinationDegister, int valueToLoad) {
+    public LoadImmediate(Register destinationDegister, int valueToLoad, int cycles) {
         this.destinationDegister = destinationDegister;
         this.valueToLoad = valueToLoad;
+        this.cycles = cycles;
     }
     
     @Override
     public int exec() {
         destinationDegister.setValue(valueToLoad);
-        return 10;
+        return cycles;
     }
     
 }

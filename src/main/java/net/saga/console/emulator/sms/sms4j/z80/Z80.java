@@ -45,7 +45,7 @@ public class Z80 {
 
     
     
-    private MemoryRegister memoryRegisterHL;
+    private MemoryRegister memoryRegisterHL = new MemoryRegister(null, registerHL);
 
     private EightBitDirectRegister registerA_alt;
     private EightBitDirectRegister registerB_alt;
@@ -77,7 +77,7 @@ public class Z80 {
     }
 
     public void setMemory(byte[] memory) {
-        memoryRegisterHL = new MemoryRegister(memory, registerHL);
+        memoryRegisterHL.setMemory(memory);
         this.memory = memory;
     }
 
@@ -196,7 +196,7 @@ public class Z80 {
     }
 
     public boolean getFlagH() {
-        return (registerF.getValueAsByte() & Flags.FLAG_H_HALFCARRY_MASK) > 0;
+        return ((registerF.getValueAsByte() & Flags.FLAG_H_HALFCARRY_MASK)) > 0;
     }
 
     public boolean getFlagPV() {

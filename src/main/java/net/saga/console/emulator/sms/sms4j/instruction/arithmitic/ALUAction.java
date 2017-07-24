@@ -15,15 +15,45 @@ public interface ALUAction {
      * @param source      the second operand
      * @return flags which may be set by the operation
      */
-    byte execute(Register destination, Register source);
+    byte execute(Register destination, Register source, int carry);
 
-    public static final ALUAction ADD_A = (destination, source) -> {
+    ALUAction ADD_A = (destination, source, carry) -> {
+        return add(destination, source, 0);
+    };
+
+    public static final ALUAction ADC_A = (destination, source, carry) -> {
+        return add(destination, source, carry);
+    };
+    public static final ALUAction SUB = (destination, source, carry) -> {
+        throw new IllegalStateException("Not implemented");
+    };
+    public static final ALUAction SBC_A = (destination, source, carry) -> {
+        throw new IllegalStateException("Not implemented");
+    };
+    public static final ALUAction AND = (destination, source, carry) -> {
+        throw new IllegalStateException("Not implemented");
+    };
+    public static final ALUAction XOR = (destination, source, carry) -> {
+        throw new IllegalStateException("Not implemented");
+    };
+    public static final ALUAction OR = (destination, source, carry) -> {
+        throw new IllegalStateException("Not implemented");
+    };
+    public static final ALUAction CP = (destination, source, carry) -> {
+        throw new IllegalStateException("Not implemented");
+    };
+
+    static byte add(Register destination, Register source, int carry) {
         byte flags = 0;
         int augend = destination.getValue();
         int addend = source.getValue();
         int byteMask = destination.getSize() == 8 ? 0xFF : 0xFFFF;
-        int trueResult = augend + addend;
-        int maskedResult = trueResult & byteMask;
+
+        int trueResult = augend + addend + carry;
+        int maskedResult = (byte)(trueResult & byteMask);
+        if (byteMask == 0xFFFF) {
+            maskedResult = (short)(trueResult & byteMask);
+        }
 
         //Flags
         if (trueResult > byteMask) {//Overflow
@@ -56,27 +86,8 @@ public interface ALUAction {
 
         destination.setValue(maskedResult);
         return flags;
-    };
-    public static final ALUAction ADC_A = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
-    public static final ALUAction SUB = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
-    public static final ALUAction SBC_A = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
-    public static final ALUAction AND = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
-    public static final ALUAction XOR = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
-    public static final ALUAction OR = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
-    public static final ALUAction CP = (destination, source) -> {
-        throw new IllegalStateException("Not implemented");
-    };
+    }
+
+
 
 }

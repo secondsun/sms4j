@@ -36,7 +36,7 @@ public class AluInstruction implements InstructionExecution {
     public int exec() {
 
         EightBitDirectRegister flagsRegister = z80.getRegisterF();
-        byte flags = aluAction.execute(destination, operand);
+        byte flags = aluAction.execute(destination, operand, z80.getFlagC()?1:0);
         flags &= flagsMask;
 
         byte oldFlags = flagsRegister.getValueAsByte();

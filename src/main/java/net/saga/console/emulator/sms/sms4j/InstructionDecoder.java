@@ -166,7 +166,7 @@ public class InstructionDecoder {
             case 1:
                 switch (q) {
                     case 0:
-                        return new LoadImmediate(tableRP[p], read16());
+                        return new LoadImmediate(tableRP[p], read16(), 10);
                     case 1:
                         return new AluInstruction(tableAlu[0], tableRP[p], z80.getRegisterHL(), z80, 11, (byte) 0b00010011);
                         //return new AddToHL(tableRP[p], z80);
@@ -220,7 +220,7 @@ public class InstructionDecoder {
             case 5:
                 return new DecrementRegisterInstructionEightBit(tableR[y], z80);
             case 6:
-                return new LoadImmediate(tableR[y], z80.readProgramByte());
+                return new LoadImmediate(tableR[y], z80.readProgramByte(), 7);
             case 7: //Assorted operations on accumulator/flags
                 switch (y) {
                     case 0:

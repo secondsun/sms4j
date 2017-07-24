@@ -25,7 +25,7 @@ package net.saga.console.emulator.sms.sms4j.z80;
  */
 public class MemoryRegister implements Register{
     
-    private final byte[] memory;
+    private byte[] memory;
     private final SixteenBitCombinedRegister register;
 
     public MemoryRegister(byte[] memory, SixteenBitCombinedRegister register) {
@@ -48,5 +48,7 @@ public class MemoryRegister implements Register{
         return 8;
     }
 
-
+    public void setMemory(byte[] memory) {
+        this.memory = memory;
+    }
 }
