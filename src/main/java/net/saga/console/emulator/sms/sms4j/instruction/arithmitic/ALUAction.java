@@ -3,6 +3,8 @@ package net.saga.console.emulator.sms.sms4j.instruction.arithmitic;
 import net.saga.console.emulator.sms.sms4j.z80.Flags;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 
+import static net.saga.console.emulator.sms.sms4j.util.Utils.countBits;
+
 @FunctionalInterface
 public interface ALUAction {
 
@@ -32,8 +34,31 @@ public interface ALUAction {
         throw new IllegalStateException("Not implemented");
     };
     public static final ALUAction AND = (destination, source, carry) -> {
-        throw new IllegalStateException("Not implemented");
+        byte flags = 0;
+        flags |= Flags.FLAG_H_HALFCARRY_MASK;
+
+        byte aReg = (byte) destination.getValue();
+        byte other = (byte) source.getValue();
+        byte out = (byte) (aReg & other);
+
+        if (out == 0) {
+            flags |= Flags.FLAG_Z_ZERO_MASK;
+        }
+
+        if (out < 0) {
+            flags |= Flags.FLAG_S_SIGN_MASK;
+        }
+
+        if ((countBits(out) % 2) == 0) {
+            flags |= Flags.FLAG_PV_PARITY_MASK;
+        }
+
+        destination.setValue(out);
+
+        return flags;
     };
+
+
     public static final ALUAction XOR = (destination, source, carry) -> {
         throw new IllegalStateException("Not implemented");
     };
