@@ -25,8 +25,9 @@ public interface ALUAction {
         return add(destination, source, carry);
     };
     public static final ALUAction SUB = (destination, source, carry) -> {
-        throw new IllegalStateException("Not implemented");
+        return sub(destination, source, 0);
     };
+
     public static final ALUAction SBC_A = (destination, source, carry) -> {
         throw new IllegalStateException("Not implemented");
     };
@@ -85,6 +86,53 @@ public interface ALUAction {
         }
 
         destination.setValue(maskedResult);
+        return flags;
+    }
+
+    static byte sub(Register destination, Register source, int borrow) {
+        byte flags = 0;
+        int minuend = destination.getValue();
+        int subtrahend = source.getValue();
+        int byteMask = destination.getSize() == 8 ? 0xFF : 0xFFFF;
+
+        int trueDifference = minuend - subtrahend - borrow;
+        int maskedDifference = (byte)(trueDifference & byteMask);
+        if (byteMask == 0xFFFF) {
+            maskedDifference = (short)(trueDifference & byteMask);
+        }
+
+        //Flags
+        if (trueDifference > minuend) {//Overflow
+            flags |= Flags.FLAG_PV_OVERFLOW_MASK;
+            flags |= Flags.FLAG_C_CARRY_MASK;
+        }
+
+        if (maskedDifference == 0) {
+            flags |= Flags.FLAG_Z_ZERO_MASK;
+        }
+
+        if (maskedDifference < 0) {
+            flags |= Flags.FLAG_S_SIGN_MASK;
+        }
+
+        flags |= Flags.FLAG_N_SUBTRACT_MASK;
+
+        switch (destination.getSize()) {
+            case 8:
+                if ((subtrahend & 0x0F) < (minuend & 0x0F) ) {
+                    flags |= Flags.FLAG_H_HALFCARRY_MASK;
+                }
+                break;
+            case 16:
+                if ((subtrahend & 0x0FFF) < (minuend & 0x0FFF) ) {
+                    flags |= Flags.FLAG_H_HALFCARRY_MASK;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException(destination.getSize() + " is not a valid register size");
+        }
+
+        destination.setValue(maskedDifference);
         return flags;
     }
 

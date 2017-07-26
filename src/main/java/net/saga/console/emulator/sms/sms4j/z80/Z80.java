@@ -195,6 +195,11 @@ public class Z80 {
         return (registerF.getValueAsByte() & 0x40) > 0;
     }
 
+    /**
+     * FLag H is the halfcarry flag.  This means that a carry or borrow in the lower nibble happened.
+     *
+     * @return if the halfcarry flag is set
+     */
     public boolean getFlagH() {
         return ((registerF.getValueAsByte() & Flags.FLAG_H_HALFCARRY_MASK)) > 0;
     }
