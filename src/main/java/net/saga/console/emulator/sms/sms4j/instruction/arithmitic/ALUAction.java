@@ -119,12 +119,12 @@ public interface ALUAction {
 
         switch (destination.getSize()) {
             case 8:
-                if ((subtrahend & 0x0F) < (minuend & 0x0F) ) {
+                if ((minuend & 0x0F) < (subtrahend & 0x0F) ) {
                     flags |= Flags.FLAG_H_HALFCARRY_MASK;
                 }
                 break;
             case 16:
-                if ((subtrahend & 0x0FFF) < (minuend & 0x0FFF) ) {
+                if ((minuend & 0x0FFF) < (subtrahend & 0x0FFF) ) {
                     flags |= Flags.FLAG_H_HALFCARRY_MASK;
                 }
                 break;
