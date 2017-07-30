@@ -41,4 +41,111 @@ public class JumpTest {
         assertEquals(8, z80.getPC());
         assertEquals(0, z80.getB());
     }
+    
+
+    @ParameterizedTest
+    @CsvSource({
+            "'0x3E, 0xFF, 0xB7, 0x20, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'", //Load A n, OR A, JR NZ 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+            "'0x3E, 0x00, 0xB7, 0x20, 0x04, 0x76, 0x76, 0x76, 0x76, 0x06'"
+    })
+    public void testJR_NZ(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+    {
+        Z80 z80 = new Z80();
+        z80.setMemory(memory);
+        while (!z80.isHalt()) {
+            z80.cycle();
+        }
+
+
+        assertEquals(memory[9], z80.getPC());
+
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'0x3E, 0xFF, 0xB7, 0x28, 0x04, 0x76, 0x76, 0x76, 0x76, 0x06'", //Load A n, OR A, JR Z 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+            "'0x3E, 0x00, 0xB7, 0x28, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'"
+    })
+    public void testJR_Z(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+    {
+        Z80 z80 = new Z80();
+        z80.setMemory(memory);
+        while (!z80.isHalt()) {
+            z80.cycle();
+        }
+
+
+        assertEquals(memory[9], z80.getPC());
+
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'0x3E, 0xFF, 0x3C, 0xC6, 0x01, 0x38, 0x04, 0x76, 0x76, 0x76, 0x76, 0x09'", //Load A n, ADD A 1, JR C 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+            "'0x3E, 0x00, 0x3C, 0xC6, 0x01, 0x38, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'"
+    })
+    public void testJR_C(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+    {
+        Z80 z80 = new Z80();
+        z80.setMemory(memory);
+        while (!z80.isHalt()) {
+            z80.cycle();
+        }
+
+
+        assertEquals(memory[11], z80.getPC());
+
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'0x3E, 0xFF, 0xC6, 0x01, 0x30, 0x04, 0x76, 0x76, 0x76, 0x76, 0x07'", //Load A n, ADD A 1, JR NC 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+            "'0x3E, 0x00, 0xC6, 0x01, 0x30, 0x04, 0x76, 0x76, 0x76, 0x76, 0x09'"
+    })
+    public void testJR_NC(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+    {
+        Z80 z80 = new Z80();
+        z80.setMemory(memory);
+        while (!z80.isHalt()) {
+            z80.cycle();
+        }
+
+
+        assertEquals(memory[10], z80.getPC());
+
+    }
+
+//        [Test]
+//            [TestCase(0xFF, 0x07)]
+//            [TestCase(0x00, 0x09)]
+//    public void Test_JP_NC_nn(byte val, short addr)
+//    {
+//        asm.LoadRegVal(7, val);
+//        asm.IncReg(7);
+//        asm.JpNc(0x0008);
+//        asm.Halt();
+//        asm.Halt();
+//        asm.Halt();
+//
+//        en.Run();
+//
+//        Assert.AreEqual(addr, en.PC);
+//    }
+//        [Test]
+//            [TestCase(0xFF, 0x09)]
+//            [TestCase(0x00, 0x07)]
+//    public void Test_JP_C_nn(byte val, short addr)
+//    {
+//        asm.LoadRegVal(7, val);
+//        asm.IncReg(7);
+//        asm.JpC(0x0008);
+//        asm.Halt();
+//        asm.Halt();
+//        asm.Halt();
+//
+//        en.Run();
+//
+//        Assert.AreEqual(addr, en.PC);
+//    }
+    
 }

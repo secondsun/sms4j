@@ -31,8 +31,10 @@ public interface Condition {
     public boolean evaluate(EightBitDirectRegister flags);
     
 
-    public static final Condition CARRY = (flags) -> {return (flags.getValueAsByte() & 0b00000001) == 1;};
-    public static final Condition NO_CARRY = (flags) -> {return (flags.getValueAsByte() & 0b00000001) == 0;};
+    public static final Condition CARRY = (flags) -> {
+        return (flags.getValueAsByte() & 0b00000001) == 1;};
+    public static final Condition NO_CARRY = (flags) -> {
+        return (flags.getValueAsByte() & 0b00000001) == 0;};
     public static final Condition ZERO = (flags) -> {return (flags.getValueAsByte() & 0b01000000) > 0;};
     public static final Condition NO_ZERO = (flags) -> {return (flags.getValueAsByte() & 0b01000000) == 0;};
     public static final Condition SIGN = (flags) -> {return (flags.getValueAsByte() & 0b10000000) > 1;};

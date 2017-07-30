@@ -3,6 +3,7 @@ package net.saga.console.emulator.sms.sms4j.test;
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
 import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -147,4 +148,8 @@ public class E06_8BitAddTest {
         assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
     }
 
+    @Test
+    public void testAddImmediate() {
+        assertEquals(0,1, "Implement the ADD * test");
+    }
 }

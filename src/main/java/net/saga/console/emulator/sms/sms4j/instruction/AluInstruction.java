@@ -17,16 +17,16 @@ public class AluInstruction implements InstructionExecution {
     /**
      *
      * @param aluAction The action to perform
-     * @param operatand the operand of the aluAction
+     * @param operand the operand of the aluAction
      * @param destination the destinaiton of the ALU action (often the accumulator)
      * @param z80 the z80 system
      * @param cycles the number of cycles the operation will take
      * @param flagsMask the mask to apply to the output of the operation before ORing with the fRegister.
      */
-    public AluInstruction(ALUAction aluAction, Register operatand, Register destination, Z80 z80, int cycles, byte flagsMask) {
+    public AluInstruction(ALUAction aluAction, Register operand, Register destination, Z80 z80, int cycles, byte flagsMask) {
         this.aluAction = aluAction;
         this.destination = destination;
-        this.operand = operatand;
+        this.operand = operand;
         this.z80 = z80;
         this.cycles = cycles;
         this.flagsMask = flagsMask;

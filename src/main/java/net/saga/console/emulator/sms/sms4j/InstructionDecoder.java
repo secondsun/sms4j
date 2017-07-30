@@ -22,8 +22,10 @@ import net.saga.console.emulator.sms.sms4j.instruction.*;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUAction;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUActions;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
+import net.saga.console.emulator.sms.sms4j.instruction.jump.ConditionalJump;
 import net.saga.console.emulator.sms.sms4j.instruction.jump.DJNZJump;
 import net.saga.console.emulator.sms.sms4j.instruction.jump.UnconditionalJump;
+import net.saga.console.emulator.sms.sms4j.z80.EightBitDirectRegister;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
@@ -165,7 +167,7 @@ public class InstructionDecoder {
                         return new UnconditionalJump(z80, z80.readProgramByte());
                     default:
                         //JR cc[y-4], d
-                        throw new IllegalStateException("Not implemented");
+                        return new ConditionalJump(z80, tableCC[y-4], z80.readProgramByte());
                 }
             case 1:
                 switch (q) {
@@ -321,6 +323,7 @@ public class InstructionDecoder {
                 }
             case 6:
                 //alu[y] n
+                return new AluInstruction(tableAlu[y], new EightBitDirectRegister(z80.readProgramByte()), z80.getRegisterA(), z80,7, (byte) 0xFF);
             case 7:
                 //RST y*8 Restart
             default:

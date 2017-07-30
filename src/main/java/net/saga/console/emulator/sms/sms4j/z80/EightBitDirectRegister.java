@@ -9,6 +9,13 @@ public class EightBitDirectRegister implements Register<Byte> {
     
     private int value;//Registers are 8 bits.  We will use masking for get/set operations.
 
+    public EightBitDirectRegister(byte b) {
+        this.setValue(b);
+    }
+
+    public EightBitDirectRegister() {
+    }
+
     /**
      * Returns the value of this register, will be 0-255.
      * @return register value
