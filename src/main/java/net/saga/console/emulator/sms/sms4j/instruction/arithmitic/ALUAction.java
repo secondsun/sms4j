@@ -58,7 +58,28 @@ public interface ALUAction {
 
 
     public static final ALUAction XOR = (destination, source, carry) -> {
-        throw new IllegalStateException("Not implemented");
+        byte flags = 0;
+        flags |= Flags.FLAG_H_HALFCARRY_MASK;
+
+        byte aReg = (byte) destination.getValue();
+        byte other = (byte) source.getValue();
+        byte out = (byte) (aReg ^ other);
+
+        if (out == 0) {
+            flags |= Flags.FLAG_Z_ZERO_MASK;
+        }
+
+        if (out < 0) {
+            flags |= Flags.FLAG_S_SIGN_MASK;
+        }
+
+        if ((countBits(out) % 2) == 0) {
+            flags |= Flags.FLAG_PV_PARITY_MASK;
+        }
+
+        destination.setValue(out);
+
+        return flags;
     };
     public static final ALUAction OR = (destination, source, carry) -> {
         throw new IllegalStateException("Not implemented");
