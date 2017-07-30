@@ -1,6 +1,5 @@
 package net.saga.console.emulator.sms.sms4j.test;
 
-import com.sun.xml.internal.ws.policy.AssertionSet;
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
 import org.junit.jupiter.api.Assertions;

@@ -2,8 +2,6 @@ package net.saga.console.emulator.sms.sms4j.test;
 
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -36,15 +34,15 @@ public class E06_8BitAddTest {
         z80.setMemory(memory);
         z80.cycle(18);
 
-        int regValue = memory[3] & 0xFF;
-        int aValue = memory[1] & 0xFF;
+        byte regValue = (byte) (memory[3] & 0xFF);
+        byte aValue = (byte) (memory[1] & 0xFF);
         int trueValue = regValue + aValue;
         byte maskedValue = (byte) (trueValue & 0xFF);
         assertEquals(maskedValue, z80.getA());
         assertEquals(maskedValue < 0, z80.getFlagS(), "Flag S contained the wrong value");
         assertEquals(z80.getA() == 0x00, z80.getFlagZ(), "Flag Z contained the wrong value");
         assertEquals((((0x0F & aValue) + (0x0F & regValue)) > 0x0F), z80.getFlagH(), "Flag H contained the wrong value");
-        boolean overflow = trueValue > 0xFF;
+        boolean overflow = trueValue > (byte)0x7F || trueValue < (byte)0x80;
         assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
         assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
     }
@@ -65,15 +63,15 @@ public class E06_8BitAddTest {
         z80.setMemory(memory);
         z80.cycle(24);
 
-        int regValue = memory[6] & 0xFF;
-        int aValue = memory[1] & 0xFF;
+        byte regValue = (byte) (memory[6] & 0xFF);
+        byte aValue = (byte) (memory[1] & 0xFF);
         int trueValue = regValue + aValue;
         byte maskedValue = (byte) (trueValue & 0xFF);
         assertEquals(maskedValue, z80.getA());
         assertEquals(maskedValue < 0, z80.getFlagS(), "Flag S contained the wrong value");
         assertEquals(z80.getA() == 0x00, z80.getFlagZ(), "Flag Z contained the wrong value");
         assertEquals((((0x0F & aValue) + (0x0F & regValue)) > 0x0F), z80.getFlagH(), "Flag H contained the wrong value");
-        boolean overflow = trueValue > 0xFF;
+        boolean overflow = trueValue >(byte) 0x7F || trueValue < (byte)0x80;
         assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
         assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
     }
@@ -105,8 +103,8 @@ public class E06_8BitAddTest {
         z80.setMemory(memory);
         z80.cycle(18);
 
-        int regValue = memory[3] & 0xFF;
-        int aValue = memory[1] & 0xFF;
+        byte regValue = (byte) (memory[3] & 0xFF);
+        byte aValue = (byte) (memory[1] & 0xFF);
         int trueValue = regValue + aValue;
         if (carry) {trueValue++;}
         byte maskedValue = (byte) (trueValue & 0xFF);
@@ -114,7 +112,7 @@ public class E06_8BitAddTest {
         assertEquals(maskedValue < 0, z80.getFlagS(), "Flag S contained the wrong value");
         assertEquals(z80.getA() == 0x00, z80.getFlagZ(), "Flag Z contained the wrong value");
         assertEquals((((0x0F & aValue) + (0x0F & regValue)) > 0x0F), z80.getFlagH(), "Flag H contained the wrong value");
-        boolean overflow = trueValue > 0xFF;
+        boolean overflow = trueValue > (byte)0x7F || trueValue < (byte)0x80;
         assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
         assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
     }
@@ -135,21 +133,53 @@ public class E06_8BitAddTest {
         z80.setMemory(memory);
         z80.cycle(24);
 
-        int regValue = memory[6] & 0xFF;
-        int aValue = memory[1] & 0xFF;
+        byte regValue = (byte) (memory[6] & 0xFF);
+        byte aValue = (byte) (memory[1] & 0xFF);
         int trueValue = regValue + aValue;
         byte maskedValue = (byte) (trueValue & 0xFF);
         assertEquals(maskedValue, z80.getA());
         assertEquals(maskedValue < 0, z80.getFlagS(), "Flag S contained the wrong value");
         assertEquals(z80.getA() == 0x00, z80.getFlagZ(), "Flag Z contained the wrong value");
         assertEquals((((0x0F & aValue) + (0x0F & regValue)) > 0x0F), z80.getFlagH(), "Flag H contained the wrong value");
-        boolean overflow = trueValue > 0xFF;
+        boolean overflow = trueValue > (byte)0x7F || trueValue < (byte)0x80;
         assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
         assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
     }
 
-    @Test
-    public void testAddImmediate() {
-        assertEquals(0,1, "Implement the ADD * test");
+    @ParameterizedTest
+    @CsvSource({
+            "'0x3E, 0x44, 0xC6, 0x11, 0x76'", //Load A n, ADD A 11, HALT
+            "'0x3E, 0x44, 0xC6, 0x0F, 0x76'",
+            "'0x3E, 0x44, 0xC6, 0xFF, 0x76'",
+            "'0x3E, 0x44, 0xC6, 0x01, 0x76'",
+            "'0x3E, 0xF4, 0xC6, 0x11, 0x76'",
+            "'0x3E, 0xF4, 0xC6, 0x0F, 0x76'",
+            "'0x3E, 0xF4, 0xC6, 0xFF, 0x76'",
+            "'0x3E, 0xF4, 0xC6, 0x01, 0x76'"
+    })
+    public void testAddImmediate(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
+
+        byte val = memory[1];
+        byte val2 = memory[3];
+        int trueSum = val + val2;
+        byte byteSum = (byte) (trueSum & 0xFF);
+
+        Z80 z80 = new Z80();
+        z80.setMemory(memory);
+        z80.cycle(15);
+
+
+
+        assertEquals(5, z80.getPC());
+        assertEquals(byteSum, z80.getA());
+
+        assertEquals(byteSum < 0, z80.getFlagS(), "Flag S contained the wrong value");
+        assertEquals(z80.getA() == 0x00, z80.getFlagZ(), "Flag Z contained the wrong value");
+        assertEquals(((0x0F & val2) + (0x0F & val)) > 0x0F, z80.getFlagH(), "Flag H contained the wrong value");
+        boolean overflow = trueSum > (byte)0x7F || trueSum < (byte)0x80;
+        assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
+        assertEquals(trueSum > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
+
+
     }
 }

@@ -151,7 +151,7 @@ public class Z80 {
     /**
      * This will signal a clock cycle to the z80
      *
-     * @param numberOfCycles the number of cycles to execute
+     * @param numberOfCycles the number of cycles to executeUntilHalt
      */
     public void cycle(int numberOfCycles) {
         for (int i = 0; i < numberOfCycles; i++) {
@@ -301,5 +301,11 @@ public class Z80 {
 
     public boolean isHalt() {
         return halt;
+    }
+
+    public void executeUntilHalt() {
+        while (!halt) {
+            cycle();
+        }
     }
 }

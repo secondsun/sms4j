@@ -135,9 +135,11 @@ public abstract class ALUActions implements ALUAction {
 
     private static byte add(Register destination, Register source, int carry) {
         byte flags = 0;
-        int augend = destination.getValue();
-        int addend = source.getValue();
+
         int byteMask = destination.getSize() == 8 ? 0xFF : 0xFFFF;
+
+        byte augend =(byte) destination.getValue();
+        byte addend =(byte) source.getValue();
 
         int trueResult = augend + addend + carry;
         int maskedResult = (byte)(trueResult & byteMask);
@@ -147,8 +149,14 @@ public abstract class ALUActions implements ALUAction {
 
         //Flags
         if (trueResult > byteMask) {//Overflow
-            flags |= Flags.FLAG_PV_OVERFLOW_MASK;
+
             flags |= Flags.FLAG_C_CARRY_MASK;
+        }
+
+        if (augend > 0 && addend > 0 && maskedResult < 0) {
+            flags |= Flags.FLAG_PV_OVERFLOW_MASK;
+        } else if (augend < 0 && addend < 0 && maskedResult > 0) {
+            flags |= Flags.FLAG_PV_OVERFLOW_MASK;
         }
 
         if (maskedResult == 0) {

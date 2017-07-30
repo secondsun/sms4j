@@ -26,7 +26,7 @@ public class E01_Z80ImmediateLoadTest {
         final Z80 z80 = new Z80();
         z80.setPC(0); //The PC defaults to 0, but being explicit for documentation
         z80.setMemory(new byte[]{0, 0, 0}); //Memory is just a collection of bytes.
-        z80.cycle(4);//Fetch next instruction, execute, and incriment the program counter
+        z80.cycle(4);//Fetch next instruction, executeUntilHalt, and incriment the program counter
         assertEquals(1, z80.getPC());
         z80.cycle(4);
         z80.cycle(4);

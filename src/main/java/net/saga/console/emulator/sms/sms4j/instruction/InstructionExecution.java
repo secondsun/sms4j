@@ -23,7 +23,7 @@ package net.saga.console.emulator.sms.sms4j.instruction;
  * An instruction execution is a bit of code which handles the, well, execution
  * of an instruction.
  * 
- * For instance, if the Instruction was INC rB then the execute method would 
+ * For instance, if the Instruction was INC rB then the executeUntilHalt method would
  * increment register B and return the number of cycles it takes.
  */
 public interface InstructionExecution {

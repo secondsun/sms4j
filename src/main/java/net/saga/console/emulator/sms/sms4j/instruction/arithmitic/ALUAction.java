@@ -9,7 +9,7 @@ import static net.saga.console.emulator.sms.sms4j.util.Utils.countBits;
 public interface ALUAction {
 
     /**
-     * This will execute a ALU operation and store the result in destination using the source value and return a byte
+     * This will executeUntilHalt a ALU operation and store the result in destination using the source value and return a byte
      * that is all of the flags that were set in the operation.  Note that actual opcodes may not set all of the flags
      * returned.
      *
