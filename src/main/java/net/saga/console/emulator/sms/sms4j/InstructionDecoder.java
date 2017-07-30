@@ -20,6 +20,7 @@ package net.saga.console.emulator.sms.sms4j;
 
 import net.saga.console.emulator.sms.sms4j.instruction.*;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUAction;
+import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUActions;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
@@ -98,14 +99,14 @@ public class InstructionDecoder {
     }
 
     private void buildALUTable() {
-        tableAlu[0] = ALUAction.ADD_A;
-        tableAlu[1] = ALUAction.ADC_A;
-        tableAlu[2] = ALUAction.SUB;
-        tableAlu[3] = ALUAction.SBC_A;
-        tableAlu[4] = ALUAction.AND;
-        tableAlu[5] = ALUAction.XOR;
-        tableAlu[6] = ALUAction.OR;
-        tableAlu[7] = ALUAction.CP;
+        tableAlu[0] = ALUActions.ADD_A;
+        tableAlu[1] = ALUActions.ADC_A;
+        tableAlu[2] = ALUActions.SUB;
+        tableAlu[3] = ALUActions.SBC_A;
+        tableAlu[4] = ALUActions.AND;
+        tableAlu[5] = ALUActions.XOR;
+        tableAlu[6] = ALUActions.OR;
+        tableAlu[7] = ALUActions.CP;
 
     }
 
