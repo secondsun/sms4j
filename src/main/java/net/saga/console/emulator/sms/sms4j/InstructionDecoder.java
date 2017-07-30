@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class InstructionDecoder {
 
-    private static final InstructionExecution NOOP = new Noop();
+    public static final InstructionExecution NOOP = new Noop();
     private static final Set<Integer> PREFIX_BYTES = new HashSet<Integer>(Arrays.asList(new Integer[]{0xCB, 0xDD, 0xED, 0xFD}));
     private final Z80 z80;
     private Register[] tableR = new Register[8];
@@ -157,7 +157,7 @@ public class InstructionDecoder {
                     case 1:
                         //EX AF, AF'
                     case 2:
-                        //DJNZ d
+                        return new DJNZJump(z80, z80.readProgramByte());
                     case 3:
                         //JR d
                     default:
@@ -248,7 +248,7 @@ public class InstructionDecoder {
 
     private InstructionExecution decodeUnprefixedOpCodeX1(int y, int z, int q, int p, Z80 z80) {
         if (z == 6 && y == 6) {
-            throw new RuntimeException("HALT");
+            return new Halt(z80);
         } else {
             return new LoadFromRegister(tableR[y], tableR[z]);
         }

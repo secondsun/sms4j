@@ -20,6 +20,7 @@ package net.saga.console.emulator.sms.sms4j.z80;
 
 import net.saga.console.emulator.sms.sms4j.InstructionDecoder;
 import net.saga.console.emulator.sms.sms4j.instruction.InstructionExecution;
+import net.saga.console.emulator.sms.sms4j.instruction.Noop;
 
 /**
  *
@@ -67,7 +68,8 @@ public class Z80 {
     private int cycleCountDown = 0; //cycleCountDown is incremented by the number of cycles an instruction requires.
 
     private final InstructionDecoder decoder = new InstructionDecoder(this);
-    
+    private boolean halt = false;
+
     public boolean isPrefix(byte testPrefix) {
         return (testPrefix == (byte) 0xCB) || (testPrefix == (byte) 0xDD) || (testPrefix == (byte) 0xED) || (testPrefix == (byte) 0xFD);
     }
@@ -86,8 +88,12 @@ public class Z80 {
     }
 
     public void executeNextInstruction() {
-        InstructionExecution instruction = decoder.decode(this);
-        cycleCountDown += instruction.exec();
+        if (!halt) {
+            InstructionExecution instruction = decoder.decode(this);
+            cycleCountDown += instruction.exec();
+        } else {
+            cycleCountDown += InstructionDecoder.NOOP.exec();
+        }
     }
 
     public int getPC() {
@@ -287,5 +293,13 @@ public class Z80 {
 
     public void writeMemory(int destAaddress, int value) {
         memory[destAaddress & 0xFFFF] = (byte)(0xFF & value);
+    }
+
+    public void setHalt(boolean halt) {
+        this.halt = halt;
+    }
+
+    public boolean isHalt() {
+        return halt;
     }
 }
