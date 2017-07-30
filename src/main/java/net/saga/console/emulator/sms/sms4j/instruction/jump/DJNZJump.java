@@ -1,4 +1,4 @@
-package net.saga.console.emulator.sms.sms4j;
+package net.saga.console.emulator.sms.sms4j.instruction.jump;
 
 import net.saga.console.emulator.sms.sms4j.instruction.InstructionExecution;
 import net.saga.console.emulator.sms.sms4j.z80.Register;

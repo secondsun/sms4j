@@ -22,6 +22,8 @@ import net.saga.console.emulator.sms.sms4j.instruction.*;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUAction;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUActions;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
+import net.saga.console.emulator.sms.sms4j.instruction.jump.DJNZJump;
+import net.saga.console.emulator.sms.sms4j.instruction.jump.UnconditionalJump;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
@@ -160,6 +162,7 @@ public class InstructionDecoder {
                         return new DJNZJump(z80, z80.readProgramByte());
                     case 3:
                         //JR d
+                        return new UnconditionalJump(z80, z80.readProgramByte());
                     default:
                         //JR cc[y-4], d
                         throw new IllegalStateException("Not implemented");
