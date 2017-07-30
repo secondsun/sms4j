@@ -23,16 +23,14 @@ public interface ALUAction {
         return add(destination, source, 0);
     };
 
-    public static final ALUAction ADC_A = (destination, source, carry) -> {
-        return add(destination, source, carry);
-    };
+
     public static final ALUAction SUB = (destination, source, carry) -> {
         return sub(destination, source, 0);
     };
 
-    public static final ALUAction SBC_A = (destination, source, carry) -> {
-        throw new IllegalStateException("Not implemented");
-    };
+    public static final ALUAction SBC_A = ALUAction::sub;
+    public static final ALUAction ADC_A = ALUAction::add;
+
     public static final ALUAction AND = (destination, source, carry) -> {
         byte flags = 0;
         flags |= Flags.FLAG_H_HALFCARRY_MASK;
