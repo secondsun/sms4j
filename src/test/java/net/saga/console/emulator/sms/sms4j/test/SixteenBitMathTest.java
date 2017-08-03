@@ -16,7 +16,7 @@ public class SixteenBitMathTest {
     @ParameterizedTest
     @CsvSource({
             "'0x21, 0x10, 0x10, 0x01, 0x01, 0x01, 0x09'", //Load 0x1010 into HL, Load 0x0101 into BC, add BC to HL
-            "'0x21, 0x10, 0xFF, 0x01, 0x01, 0x01, 0x09'",  //Load 0xFF10 into HL, Load 0x0101 into BC, add BC to HL.
+            "'0x21, 0x00, 0x80, 0x01, 0x00, 0x80, 0x09'",  //Load 0xFF10 into HL, Load 0x0101 into BC, add BC to HL.
             "'0x21, 0x10, 0x10, 0x11, 0x01, 0x01, 0x19'", //Load 0x1010 into HL, Load 0x0101 into DE, add DE to HL
             "'0x21, 0x10, 0xFF, 0x11, 0x01, 0x01, 0x19'",  //Load 0xFF10 into HL, Load 0x0101 into DE, add DE to HL.
             "'0x21, 0x01, 0xFF, 0x21, 0x01, 0xFF, 0x29'", //Load 0xFF10 into HL, Load 0xFF01 into HL, add HL to HL
@@ -25,8 +25,8 @@ public class SixteenBitMathTest {
             "'0x21, 0x10, 0x10, 0x31, 0x01, 0xFF, 0x39'",  //Load 0x1010 into HL, Load 0xFF01 into SP, add SP to HL.
     })
     public void testAddHL(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        int fullAugend = ((memory[2]/*augend high*/ << 8 ) & 0xFF00) | memory[1];
-        int fullAddend = ((memory[5]/*addend high*/ << 8 ) & 0xFF00) | memory[4];
+        int fullAugend = (short)(((memory[2]/*augend high*/ << 8 ) & 0xFF00) | memory[1]);
+        int fullAddend = (short)(((memory[5]/*addend high*/ << 8 ) & 0xFF00) | memory[4]);
         int sum = fullAddend + fullAugend;
         
         Z80 z80 = new Z80();

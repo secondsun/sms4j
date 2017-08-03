@@ -21,6 +21,7 @@ package net.saga.console.emulator.sms.sms4j;
 import net.saga.console.emulator.sms.sms4j.instruction.*;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUAction;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUActions;
+import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.SixteenBitAddToHl;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
 import net.saga.console.emulator.sms.sms4j.instruction.jump.ConditionalJump;
 import net.saga.console.emulator.sms.sms4j.instruction.jump.DJNZJump;
@@ -174,7 +175,7 @@ public class InstructionDecoder {
                     case 0:
                         return new LoadImmediate(tableRP[p], read16(), 10);
                     case 1:
-                        return new AluInstruction(tableAlu[0], tableRP[p], z80.getRegisterHL(), z80, 11, (byte) 0b00010011);
+                        return new SixteenBitAddToHl(z80, (short)tableRP[p].getValue());
                         //return new AddToHL(tableRP[p], z80);
                 }
             case 2:
