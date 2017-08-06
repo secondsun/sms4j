@@ -23,9 +23,7 @@ import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUAction;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUActions;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.SixteenBitAddToHl;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
-import net.saga.console.emulator.sms.sms4j.instruction.jump.ConditionalJump;
-import net.saga.console.emulator.sms.sms4j.instruction.jump.DJNZJump;
-import net.saga.console.emulator.sms.sms4j.instruction.jump.UnconditionalJump;
+import net.saga.console.emulator.sms.sms4j.instruction.jump.*;
 import net.saga.console.emulator.sms.sms4j.z80.EightBitDirectRegister;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
@@ -165,10 +163,10 @@ public class InstructionDecoder {
                         return new DJNZJump(z80, z80.readProgramByte());
                     case 3:
                         //JR d
-                        return new UnconditionalJump(z80, z80.readProgramByte());
+                        return new UnconditionalRelativeJump(z80, z80.readProgramByte());
                     default:
                         //JR cc[y-4], d
-                        return new ConditionalJump(z80, tableCC[y-4], z80.readProgramByte());
+                        return new ConditionalRelativeJump(z80, tableCC[y-4], z80.readProgramByte());
                 }
             case 1:
                 switch (q) {
@@ -284,10 +282,11 @@ public class InstructionDecoder {
                 }
             case 2:
                 //	JP cc[y], nn
+                return new ConditionalAbsoluteJump(z80, tableCC[y],  read16());
             case 3:
                 switch (y) {
                     case 0:
-                        //JP nn
+                        return new UnconditionalAbsoluteJump(z80, read16());
                     case 1:
                         //(CB prefix)
                     case 2:

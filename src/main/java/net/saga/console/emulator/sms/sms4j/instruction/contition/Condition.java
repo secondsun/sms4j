@@ -37,10 +37,14 @@ public interface Condition {
         return (flags.getValueAsByte() & 0b00000001) == 0;};
     public static final Condition ZERO = (flags) -> {return (flags.getValueAsByte() & 0b01000000) > 0;};
     public static final Condition NO_ZERO = (flags) -> {return (flags.getValueAsByte() & 0b01000000) == 0;};
-    public static final Condition SIGN = (flags) -> {return (flags.getValueAsByte() & 0b10000000) > 1;};
-    public static final Condition NO_SIGN = (flags) -> {return (flags.getValueAsByte() & 0b10000000) == 0;};
-    public static final Condition PE = (flags) -> {return (flags.getValueAsByte() & 0b00000100) > 1;};
-    public static final Condition PO = (flags) -> {return (flags.getValueAsByte() & 0b00000100) == 0;};
+    public static final Condition SIGN = (flags) -> {
+        return (flags.getValueAsByte() & 0b10000000) > 1;};
+    public static final Condition NO_SIGN = (flags) -> {
+        return (flags.getValueAsByte() & 0b10000000) == 0;};
+    public static final Condition PE = (flags) -> {
+        return (flags.getValueAsByte() & 0b00000100) > 1;};
+    public static final Condition PO = (flags) -> {
+        return (flags.getValueAsByte() & 0b00000100) == 0;};
     
     
 }

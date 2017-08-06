@@ -38,11 +38,7 @@ public class IncrementRegisterInstructionEightBit implements InstructionExecutio
     @Override
     public int exec() {
         byte b = (byte) register.getValue();
-        if (b < 0) {//different signs, may never overflow
-            z80.setVOverflow(false);
-        } else if ((byte) (b + 1) < 0) {//b+1 overflows to negative
-            z80.setVOverflow(true);
-        }
+        z80.setVOverflow(b == 0x7F);
 
         b++;
 

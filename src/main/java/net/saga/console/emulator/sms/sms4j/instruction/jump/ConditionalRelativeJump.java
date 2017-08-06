@@ -4,12 +4,12 @@ import net.saga.console.emulator.sms.sms4j.instruction.InstructionExecution;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
 
-public class ConditionalJump implements InstructionExecution {
+public class ConditionalRelativeJump implements InstructionExecution {
     private final Z80 z80;
     private final Condition condition;
     private final byte displacement;
 
-    public ConditionalJump(Z80 z80, Condition condition, byte displacement) {
+    public ConditionalRelativeJump(Z80 z80, Condition condition, byte displacement) {
         this.z80 = z80;
         this.condition = condition;
         this.displacement = displacement;
@@ -21,6 +21,6 @@ public class ConditionalJump implements InstructionExecution {
         if (eval) {
             z80.setPC( z80.getPC() + displacement - 2);
         }
-        return condition.evaluate(z80.getRegisterF())?12:7;
+        return eval?12:7;
     }
 }
