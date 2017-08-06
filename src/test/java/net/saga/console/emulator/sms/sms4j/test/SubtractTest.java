@@ -71,13 +71,14 @@ public class SubtractTest {
         int trueValue = aValue - regValue;
 
         byte maskedValue = (byte) (trueValue & 0xFF);
+        System.out.println(Integer.toString(z80.getRegisterF().getValue(),2));
         assertEquals(maskedValue, z80.getA());
         assertEquals(maskedValue < 0, z80.getFlagS(), "Flag S contained the wrong value");
         assertEquals(z80.getA() == 0x00, z80.getFlagZ(), "Flag Z contained the wrong value");
         assertEquals((((0x0F & aValue) - (0x0F & regValue)) < 0x0), z80.getFlagH(), "Flag H contained the wrong value");
         boolean overflow = trueValue > aValue;
         assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
-        assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
+        assertEquals(regValue > aValue, z80.getFlagC(), "Flag C contained the wrong value");
 
     }
 
@@ -108,7 +109,7 @@ public class SubtractTest {
         assertEquals((((0x0F & aValue) - (0x0F & regValue)) < 0x0), z80.getFlagH(), "Flag H contained the wrong value");
         boolean overflow = trueValue > aValue;
         assertEquals(overflow, z80.getFlagPV(), "Flag P contained the wrong value");
-        assertEquals(trueValue > 0xFF, z80.getFlagC(), "Flag C contained the wrong value");
+        assertEquals(regValue > aValue, z80.getFlagC(), "Flag C contained the wrong value");
     }
 
     @CsvSource({"'0x3E, 0x44, 0x06, 0x11, 0x98, 0'",//LD a nn, LD b nn, SBC A B

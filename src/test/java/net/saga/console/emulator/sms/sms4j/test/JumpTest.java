@@ -12,89 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JumpTest {
 
-    @Test
-    public void testUnconditionalJump() {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{0x18, 0x05,0x76,0x76,0x76,0x76});
-        while (!z80.isHalt()) {
-            z80.cycle();
-        }
-
-        Assertions.assertEquals(0x06, z80.getPC());
-
-    }
-
-    @ParameterizedTest
-    @CsvSource({"'0x06, 0x40, 0x0E, 0x40, 0x0D, 0x10, 0xFF, 0x76'",//LD B loops, LD C 64, DEC C, DJNZ - 1, HALT
-                "'0x06, 0x20, 0x0E, 0x40, 0x0D, 0x10, 0xFF, 0x76'"})
-    public void testDJNZ(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-
-        byte loops = memory[1];
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
-        while (!z80.isHalt()) {
-            z80.cycle();
-        }
-
-        assertEquals(64 - loops, z80.getC());
-        assertEquals(8, z80.getPC());
-        assertEquals(0, z80.getB());
-    }
-    
-
-    @ParameterizedTest
-    @CsvSource({
-            "'0x3E, 0xFF, 0xB7, 0x20, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'", //Load A n, OR A, JR NZ 0x04, HALT, HALT, HALT, HALT, $FinalAddress
-            "'0x3E, 0x00, 0xB7, 0x20, 0x04, 0x76, 0x76, 0x76, 0x76, 0x06'"
-    })
-    public void testJR_NZ(@ConvertWith(ByteArrayConverter.class) byte[] memory)
-    {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
-        while (!z80.isHalt()) {
-            z80.cycle();
-        }
-
-
-        assertEquals(memory[9], z80.getPC());
-
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "'0x3E, 0xFF, 0xB7, 0x28, 0x04, 0x76, 0x76, 0x76, 0x76, 0x06'", //Load A n, OR A, JR Z 0x04, HALT, HALT, HALT, HALT, $FinalAddress
-            "'0x3E, 0x00, 0xB7, 0x28, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'"
-    })
-    public void testJR_Z(@ConvertWith(ByteArrayConverter.class) byte[] memory)
-    {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
-        while (!z80.isHalt()) {
-            z80.cycle();
-        }
-
-
-        assertEquals(memory[9], z80.getPC());
-
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "'0x3E, 0xFF, 0x3C, 0xC6, 0x01, 0x38, 0x04, 0x76, 0x76, 0x76, 0x76, 0x09'", //Load A n, ADD A 1, JR C 0x04, HALT, HALT, HALT, HALT, $FinalAddress
-            "'0x3E, 0x00, 0x3C, 0xC6, 0x01, 0x38, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'"
-    })
-    public void testJR_C(@ConvertWith(ByteArrayConverter.class) byte[] memory)
-    {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
-        while (!z80.isHalt()) {
-            z80.cycle();
-        }
-
-
-        assertEquals(memory[11], z80.getPC());
-
-    }
 
     @ParameterizedTest
     @CsvSource({
@@ -113,6 +30,91 @@ public class JumpTest {
         assertEquals(memory[10], z80.getPC());
 
     }
+//
+//    @Test
+//    public void testUnconditionalJump() {
+//        Z80 z80 = new Z80();
+//        z80.setMemory(new byte[]{0x18, 0x05,0x76,0x76,0x76,0x76});
+//        while (!z80.isHalt()) {
+//            z80.cycle();
+//        }
+//
+//        Assertions.assertEquals(0x06, z80.getPC());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvSource({"'0x06, 0x40, 0x0E, 0x40, 0x0D, 0x10, 0xFF, 0x76'",//LD B loops, LD C 64, DEC C, DJNZ - 1, HALT
+//                "'0x06, 0x20, 0x0E, 0x40, 0x0D, 0x10, 0xFF, 0x76'"})
+//    public void testDJNZ(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
+//
+//        byte loops = memory[1];
+//        Z80 z80 = new Z80();
+//        z80.setMemory(memory);
+//        while (!z80.isHalt()) {
+//            z80.cycle();
+//        }
+//
+//        assertEquals(64 - loops, z80.getC());
+//        assertEquals(8, z80.getPC());
+//        assertEquals(0, z80.getB());
+//    }
+//
+//
+//    @ParameterizedTest
+//    @CsvSource({
+//            "'0x3E, 0xFF, 0xB7, 0x20, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'", //Load A n, OR A, JR NZ 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+//            "'0x3E, 0x00, 0xB7, 0x20, 0x04, 0x76, 0x76, 0x76, 0x76, 0x06'"
+//    })
+//    public void testJR_NZ(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+//    {
+//        Z80 z80 = new Z80();
+//        z80.setMemory(memory);
+//        while (!z80.isHalt()) {
+//            z80.cycle();
+//        }
+//
+//
+//        assertEquals(memory[9], z80.getPC());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvSource({
+//            "'0x3E, 0xFF, 0xB7, 0x28, 0x04, 0x76, 0x76, 0x76, 0x76, 0x06'", //Load A n, OR A, JR Z 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+//            "'0x3E, 0x00, 0xB7, 0x28, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'"
+//    })
+//    public void testJR_Z(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+//    {
+//        Z80 z80 = new Z80();
+//        z80.setMemory(memory);
+//        while (!z80.isHalt()) {
+//            z80.cycle();
+//        }
+//
+//
+//        assertEquals(memory[9], z80.getPC());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvSource({
+//            "'0x3E, 0xFF, 0x3C, 0xC6, 0x01, 0x38, 0x04, 0x76, 0x76, 0x76, 0x76, 0x09'", //Load A n, ADD A 1, JR C 0x04, HALT, HALT, HALT, HALT, $FinalAddress
+//            "'0x3E, 0x00, 0x3C, 0xC6, 0x01, 0x38, 0x04, 0x76, 0x76, 0x76, 0x76, 0x08'"
+//    })
+//    public void testJR_C(@ConvertWith(ByteArrayConverter.class) byte[] memory)
+//    {
+//        Z80 z80 = new Z80();
+//        z80.setMemory(memory);
+//        while (!z80.isHalt()) {
+//            z80.cycle();
+//        }
+//
+//
+//        assertEquals(memory[11], z80.getPC());
+//
+//    }
+//
 
 //        [Test]
 //            [TestCase(0xFF, 0x07)]
