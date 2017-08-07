@@ -109,7 +109,7 @@ public class Z80 {
     }
 
     public int getHL() {
-        return ((((registerH.getValue()) << 8) | (registerL.getValue())));
+        return ((((registerH.getValue()) << 8) | (registerL.getValue()))) & 0x0FFFF;
     }
 
     public byte getB() {

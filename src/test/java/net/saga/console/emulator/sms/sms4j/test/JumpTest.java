@@ -266,24 +266,5 @@ public class JumpTest {
 
     }
 
-        /*
-        [Test]
-        [TestCase(0x01, 0x07)]
-        [TestCase(0x80, 0x09)]
-        public void Test_JP_M_nn(byte val, short addr)
-        {
-            asm.LoadRegVal(7, val);
-            asm.OrReg(7);
-            asm.JpM(0x0008);
-            asm.Halt();
-            asm.Halt();
-            asm.Halt();
 
-            en.Run();
-
-            Assert.AreEqual(addr, en.PC);
-        }
-
-    *
-    * */
 }

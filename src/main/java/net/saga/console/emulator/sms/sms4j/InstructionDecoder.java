@@ -24,6 +24,8 @@ import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.ALUActions;
 import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.SixteenBitAddToHl;
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
 import net.saga.console.emulator.sms.sms4j.instruction.jump.*;
+import net.saga.console.emulator.sms.sms4j.instruction.rotate.RotateLeftNoCarry;
+import net.saga.console.emulator.sms.sms4j.instruction.rotate.RotateRightNoCarry;
 import net.saga.console.emulator.sms.sms4j.z80.EightBitDirectRegister;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
@@ -230,8 +232,10 @@ public class InstructionDecoder {
                 switch (y) {
                     case 0:
                         //RLCA
+                        return new RotateLeftNoCarry(z80);
                     case 1:
                         //RRCA
+                        return new RotateRightNoCarry(z80);
                     case 2:
                         //RLA
                     case 3:
@@ -274,6 +278,7 @@ public class InstructionDecoder {
                                 //EXX
                             case 2:
                                 //JP HL
+                                return new UnconditionalAbsoluteJumpAtHL(z80);
                             case 3:
                                 //LD SP,HL
                                 return new LoadFromRegister(z80.getSP(), z80.getRegisterHL(), 6);
