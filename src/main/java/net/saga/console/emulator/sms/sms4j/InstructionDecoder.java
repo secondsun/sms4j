@@ -25,7 +25,9 @@ import net.saga.console.emulator.sms.sms4j.instruction.arithmitic.SixteenBitAddT
 import net.saga.console.emulator.sms.sms4j.instruction.contition.Condition;
 import net.saga.console.emulator.sms.sms4j.instruction.jump.*;
 import net.saga.console.emulator.sms.sms4j.instruction.rotate.RotateLeftNoCarry;
+import net.saga.console.emulator.sms.sms4j.instruction.rotate.RotateLeftWithCarry;
 import net.saga.console.emulator.sms.sms4j.instruction.rotate.RotateRightNoCarry;
+import net.saga.console.emulator.sms.sms4j.instruction.rotate.RotateRightWithCarry;
 import net.saga.console.emulator.sms.sms4j.z80.EightBitDirectRegister;
 import net.saga.console.emulator.sms.sms4j.z80.MemoryRegister;
 import net.saga.console.emulator.sms.sms4j.z80.Register;
@@ -238,8 +240,10 @@ public class InstructionDecoder {
                         return new RotateRightNoCarry(z80);
                     case 2:
                         //RLA
+                        return new RotateLeftWithCarry(z80);
                     case 3:
                         //RRA
+                        return new RotateRightWithCarry(z80);
                     case 4:
                         //DAA
                     case 5:

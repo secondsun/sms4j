@@ -14,6 +14,9 @@ public class RotateRightNoCarry implements InstructionExecution {
     @Override
     public int exec() {
         byte a = z80.getA();
+        z80.setCarry((a & 0x1) > 0);
+        z80.setSubtractFlag(false);
+        z80.setHalfCarry(false);
         a = (byte) (a >>> 1 | ((a << 7)&0xFF));
         z80.getRegisterA().setValue(a);
         return 4;
