@@ -246,8 +246,10 @@ public class InstructionDecoder {
                         return new RotateRightWithCarry(z80);
                     case 4:
                         //DAA
+                        return new DecimalAdjust(z80);
                     case 5:
                         //CPL
+                        return new CPL(z80);
                     case 6:
                         //SCF
                     case 7:

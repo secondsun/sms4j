@@ -1,3 +1,6 @@
 nb-*
 target/*
 .idea/*
+.project
+.settings/*
+.classpath

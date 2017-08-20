@@ -44,5 +44,5 @@ public interface Register<T extends Number> {
      * @return 8 or 16, the number of bits
      */
     int getSize();
-    
+
 }

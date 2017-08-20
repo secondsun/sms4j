@@ -48,5 +48,8 @@ public class EightBitDirectRegister implements Register<Byte> {
         return 8;
     }
 
-
+    @Override
+    public String toString() {
+        return String.format("{hex: %s, dec : %s}", Integer.toHexString(value), Integer.toString(this.getValueAsByte()));
+    }
 }
