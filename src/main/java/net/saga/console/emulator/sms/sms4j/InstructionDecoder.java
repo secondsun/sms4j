@@ -252,8 +252,10 @@ public class InstructionDecoder {
                         return new CPL(z80);
                     case 6:
                         //SCF
+                        return new SetCarryFlag(z80);
                     case 7:
                         //CCF
+                        return new ClearCarryFlag(z80);
                 }
             default:
                 throw new IllegalStateException("Not implemented");
