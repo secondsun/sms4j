@@ -46,7 +46,8 @@ public class Z80 {
 
     
     
-    private MemoryRegister memoryRegisterHL = new MemoryRegister(null, registerHL);
+    private MemoryRegister memoryRegisterHL;
+    private MemoryRegister memoryRegisterSP;
 
     private EightBitDirectRegister registerA_alt = new EightBitDirectRegister();
     private EightBitDirectRegister registerB_alt = new EightBitDirectRegister();
@@ -82,7 +83,8 @@ public class Z80 {
     }
 
     public void setMemory(byte[] memory) {
-        memoryRegisterHL.setMemory(memory);
+        memoryRegisterHL = new MemoryRegister(memory, registerHL);
+        memoryRegisterSP = new MemoryRegister(memory, stackPointer);
         this.memory = memory;
     }
 
@@ -314,5 +316,9 @@ public class Z80 {
 
     public Register getRegisterAFAlt() {
         return this.registerAF_alt;
+    }
+
+    public Register getMemoryRegisterSP() {
+        return memoryRegisterSP;
     }
 }

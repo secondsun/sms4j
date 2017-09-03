@@ -26,9 +26,9 @@ package net.saga.console.emulator.sms.sms4j.z80;
 public class MemoryRegister implements Register{
     
     private byte[] memory;
-    private final SixteenBitCombinedRegister register;
+    private final Register<Short> register;
 
-    public MemoryRegister(byte[] memory, SixteenBitCombinedRegister register) {
+    public MemoryRegister(byte[] memory, Register<Short> register) {
         this.memory = memory;
         this.register = register;
     }
