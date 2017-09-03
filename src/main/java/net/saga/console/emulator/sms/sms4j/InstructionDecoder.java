@@ -162,6 +162,7 @@ public class InstructionDecoder {
                     case 0:
                         return NOOP;
                     case 1:
+                        return new Exchange(z80.getRegisterAF(), z80.getRegisterAFAlt());
                         //EX AF, AF'
                     case 2:
                         return new DJNZJump(z80, z80.readProgramByte());

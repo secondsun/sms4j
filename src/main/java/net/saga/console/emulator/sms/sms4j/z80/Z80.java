@@ -48,14 +48,17 @@ public class Z80 {
     
     private MemoryRegister memoryRegisterHL = new MemoryRegister(null, registerHL);
 
-    private EightBitDirectRegister registerA_alt;
-    private EightBitDirectRegister registerB_alt;
-    private EightBitDirectRegister registerC_alt;
-    private EightBitDirectRegister registerD_alt;
-    private EightBitDirectRegister registerE_alt;
-    private EightBitDirectRegister registerF_alt;
-    private EightBitDirectRegister registerH_alt;
-    private EightBitDirectRegister registerL_alt;
+    private EightBitDirectRegister registerA_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerB_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerC_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerD_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerE_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerF_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerH_alt = new EightBitDirectRegister();
+    private EightBitDirectRegister registerL_alt = new EightBitDirectRegister();
+
+    private final SixteenBitCombinedRegister registerAF_alt = new SixteenBitCombinedRegister(registerA_alt, registerF_alt);
+
 
     private int interruptVector;
     private int memoryRefresh;
@@ -307,5 +310,9 @@ public class Z80 {
         while (!halt) {
             cycle();
         }
+    }
+
+    public Register getRegisterAFAlt() {
+        return this.registerAF_alt;
     }
 }
