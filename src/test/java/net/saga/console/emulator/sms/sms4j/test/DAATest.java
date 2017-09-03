@@ -2,7 +2,6 @@ package net.saga.console.emulator.sms.sms4j.test;
 
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -19,8 +18,7 @@ public class DAATest {
             "'0x3E, 0x00, 0x06, 0x01, 0x80, 0x27,0x76, 0x01, 0x00'",
     })//
     public void testDAA(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.executeUntilHalt();
 
         byte expected = memory[7];

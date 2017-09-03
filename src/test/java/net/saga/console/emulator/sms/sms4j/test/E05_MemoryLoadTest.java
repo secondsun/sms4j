@@ -3,7 +3,6 @@ package net.saga.console.emulator.sms.sms4j.test;
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.test.util.ByteUtils;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -20,8 +19,7 @@ public class E05_MemoryLoadTest {
         //byte[] memory = {0x2A,0x03,0x00, (byte) 0x42, (byte) 0x19};
         byte lowByte = memory[3];
         byte highByte = memory[4];
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(16);
 
         assertEquals(highByte, z80.getH());
@@ -40,8 +38,7 @@ public class E05_MemoryLoadTest {
         //byte[] memory = {0x2A,0x03,0x00, (byte) 0x42, (byte) 0x19};
         byte expectedValue = memory[6];
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(17);
 
 
@@ -60,8 +57,7 @@ public class E05_MemoryLoadTest {
         //byte[] memory = {0x2A,0x03,0x00, (byte) 0x42, (byte) 0x19};
         byte expectedValue = memory[6];
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(17);
 
 
@@ -79,8 +75,7 @@ public class E05_MemoryLoadTest {
         //byte[] memory = {0x2A,0x03,0x00, (byte) 0x42, (byte) 0x19};
         byte expectedValue = memory[3];
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(13);
 
 
@@ -96,8 +91,7 @@ public class E05_MemoryLoadTest {
         //byte[] memory = {0x2A,0x03,0x00, (byte) 0x42, (byte) 0x19};
         byte expectedValue = memory[4];
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         assertEquals(expectedValue, z80.readMemory(z80.getBC()));
@@ -113,8 +107,7 @@ public class E05_MemoryLoadTest {
         //byte[] memory = {0x2A,0x03,0x00, (byte) 0x42, (byte) 0x19};
         byte expectedValue = memory[4];
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         assertEquals(expectedValue, z80.readMemory(z80.getDE()));
@@ -131,8 +124,7 @@ public class E05_MemoryLoadTest {
 
         int expectedValue = ByteUtils.toShort(memory[2], memory[1]);
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(26);
 
         int actuallyWritten = ByteUtils.toShort(
@@ -153,8 +145,7 @@ public class E05_MemoryLoadTest {
 
         byte expectedValue = memory[1];
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
 
         assertEquals(expectedValue, z80.readMemory(0x05));

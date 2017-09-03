@@ -1,7 +1,6 @@
 package net.saga.console.emulator.sms.sms4j.test;
 
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,9 +11,8 @@ public class CPLTest {
      */
     @Test
     public void testCPLIsImplemented() {
-        Z80 z80 = new Z80();
+        Z80 z80 = new Z80(new byte[]{0x2F});
 
-        z80.setMemory(new byte[]{0x2F});
         z80.getRegisterA().setValue(0b10101010);
         z80.cycle(4);
 

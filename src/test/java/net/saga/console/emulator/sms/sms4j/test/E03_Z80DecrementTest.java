@@ -17,8 +17,7 @@ public class E03_Z80DecrementTest {
 
     @Test
     public void testDecrementBC() {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{(byte) 0x01, (byte) 0xFF, (byte) 0x01, (byte) 0x0B}); //Load into BC value 0x01FF
+        Z80 z80 = new Z80(new byte[]{(byte) 0x01, (byte) 0xFF, (byte) 0x01, (byte) 0x0B}); //Load into BC value 0x01FF
         //INCR BC by 1
         z80.cycle(16);
         assertEquals(4, z80.getPC());
@@ -27,8 +26,7 @@ public class E03_Z80DecrementTest {
 
     @Test
     public void testDecrementDE() {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{(byte) 0x11, (byte) 0x00, (byte) 0x01, (byte) 0x1B});
+        Z80 z80 = new Z80(new byte[]{(byte) 0x11, (byte) 0x00, (byte) 0x01, (byte) 0x1B});
         //INCR BC by 1
         z80.cycle(16);
         assertEquals(4, z80.getPC());
@@ -37,8 +35,7 @@ public class E03_Z80DecrementTest {
 
     @Test
     public void testDecrementHL() {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{(byte) 0x21, (byte) 0x00, (byte) 0x00, (byte) 0x2B});
+        Z80 z80 = new Z80(new byte[]{(byte) 0x21, (byte) 0x00, (byte) 0x00, (byte) 0x2B});
         //INCR BC by 1
         z80.cycle(16);
         assertEquals(4, z80.getPC());
@@ -47,8 +44,7 @@ public class E03_Z80DecrementTest {
 
     @Test
     public void testDecrementSP() {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{(byte) 0x31, (byte) 0xFF, (byte) 0x01, (byte) 0x3B});
+        Z80 z80 = new Z80(new byte[]{(byte) 0x31, (byte) 0xFF, (byte) 0x01, (byte) 0x3B});
         z80.cycle(16);
         assertEquals(4, z80.getPC());
         assertEquals(0x01FE, z80.getSPValue());
@@ -72,8 +68,7 @@ public class E03_Z80DecrementTest {
 
     public void testDecrement(byte loadOpcode, int loadValueInt, byte decOpcode) {
         byte loadValue = (byte) (loadValueInt & 0xFF);
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{loadOpcode, loadValue, decOpcode}); //Load into BC value 0x01FF
+        Z80 z80 = new Z80(new byte[]{loadOpcode, loadValue, decOpcode}); //Load into BC value 0x01FF
         //DEC B by 1
         z80.cycle(11);
 

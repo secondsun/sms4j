@@ -20,7 +20,6 @@ package net.saga.console.emulator.sms.sms4j.z80;
 
 import net.saga.console.emulator.sms.sms4j.InstructionDecoder;
 import net.saga.console.emulator.sms.sms4j.instruction.InstructionExecution;
-import net.saga.console.emulator.sms.sms4j.instruction.Noop;
 
 /**
  *
@@ -44,10 +43,8 @@ public class Z80 {
     private final SixteenBitCombinedRegister registerDE = new SixteenBitCombinedRegister(registerD, registerE);
     private final SixteenBitCombinedRegister registerAF = new SixteenBitCombinedRegister(registerA, registerF);
 
-    
-    
-    private MemoryRegister memoryRegisterHL;
-    private MemoryRegister memoryRegisterSP;
+    private final MemoryRegister memoryRegisterHL;
+    private final MemoryRegister memoryRegisterSP;
 
     private EightBitDirectRegister registerA_alt = new EightBitDirectRegister();
     private EightBitDirectRegister registerB_alt = new EightBitDirectRegister();
@@ -67,11 +64,19 @@ public class Z80 {
     private int indexRegisterIY;
     private final SixteenBitDirectRegister stackPointer = new SixteenBitDirectRegister();
     private int programCounter;
-    private byte[] memory;
+    private final byte[] memory;
+
+    public Z80(byte[] memory){
+        this.memory = memory;
+        memoryRegisterHL = new MemoryRegister(this.memory, registerHL);
+        memoryRegisterSP = new MemoryRegister(this.memory, stackPointer);
+
+        decoder = new InstructionDecoder(this);
+    }
 
     private int cycleCountDown = 0; //cycleCountDown is incremented by the number of cycles an instruction requires.
 
-    private final InstructionDecoder decoder = new InstructionDecoder(this);
+    private final InstructionDecoder decoder;
     private boolean halt = false;
 
     public boolean isPrefix(byte testPrefix) {
@@ -80,12 +85,6 @@ public class Z80 {
 
     public void setPC(int pcIndex) {
         this.programCounter = pcIndex;
-    }
-
-    public void setMemory(byte[] memory) {
-        memoryRegisterHL = new MemoryRegister(memory, registerHL);
-        memoryRegisterSP = new MemoryRegister(memory, stackPointer);
-        this.memory = memory;
     }
 
     public void cycle() {

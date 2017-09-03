@@ -2,7 +2,6 @@ package net.saga.console.emulator.sms.sms4j.test;
 
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -66,8 +65,7 @@ public class E07_RegBooleanLogicTest {
             "'0x3E, 0xF4, 0x3E, 0xF4, 0xA7'",//LD A, AND A
     })
     public void testAnd(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
 
         byte val = memory[1];
@@ -96,8 +94,7 @@ public class E07_RegBooleanLogicTest {
             "'0x3E, 0xF4, 0x21, 0x06, 0x00, 0xA6, 0x01'"
     })
     public void testAndAtHL(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         byte val = memory[1];
@@ -170,8 +167,7 @@ public class E07_RegBooleanLogicTest {
             "'0x3E, 0xF4, 0x3E, 0xF4, 0xAF'",//LD A, AND A
     })
     public void testXor(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
 
         byte val = memory[1];
@@ -200,8 +196,7 @@ public class E07_RegBooleanLogicTest {
             "'0x3E, 0xF4, 0x21, 0x06, 0x00, 0xAE, 0x01'"
     })
     public void testXorAtHL(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         byte val = memory[1];
@@ -272,8 +267,7 @@ public class E07_RegBooleanLogicTest {
             "'0x3E, 0xF4, 0x3E, 0xF4, 0xB7'",//LD A, AND A
     })
     public void testOR(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
 
         byte val = memory[1];

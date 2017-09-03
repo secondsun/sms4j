@@ -2,7 +2,6 @@ package net.saga.console.emulator.sms.sms4j.test;
 
 import net.saga.console.emulator.sms.sms4j.test.util.ByteArrayConverter;
 import net.saga.console.emulator.sms.sms4j.z80.Z80;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -62,8 +61,7 @@ public class SubtractTest {
             "'0x3E, 0xF4, 0x3E, 0xF4, 0x97'",//LD a nn, LD a nn, SUB A A
     })
     public void testSubtract(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
 
         int regValue = memory[3] & 0xFF;
@@ -94,8 +92,7 @@ public class SubtractTest {
             "'0x3E, 0xF4, 0x21, 0x06, 0x00, 0x96, 0x01'",
     })
     public void testSubAtHL(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         int regValue = memory[6] & 0xFF;
@@ -212,8 +209,7 @@ public class SubtractTest {
             "'0x3E, 0xF4, 0x3E, 0xF4, 0x9f, 01'",//LD a nn, LD a nn, SBC A A
     })
     public void testSubtractWithCarry(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
         z80.setCarry(memory[5] > 0);
         int regValue = memory[3] & 0xFF;

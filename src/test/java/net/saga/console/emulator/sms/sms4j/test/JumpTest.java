@@ -15,8 +15,8 @@ public class JumpTest {
 
     @Test
     public void testUnconditionalJump() {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[]{0x18, 0x05,0x76,0x76,0x76,0x76});
+        Z80 z80 = new Z80(new byte[]{0x18, 0x05,0x76,0x76,0x76,0x76});
+
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -31,8 +31,7 @@ public class JumpTest {
     public void testDJNZ(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
 
         byte loops = memory[1];
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -50,8 +49,7 @@ public class JumpTest {
     })
     public void testJR_NZ(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -68,8 +66,7 @@ public class JumpTest {
     })
     public void testJR_Z(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -86,8 +83,7 @@ public class JumpTest {
     })
     public void testJR_C(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -104,8 +100,7 @@ public class JumpTest {
     })
     public void testJR_NC(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -118,8 +113,8 @@ public class JumpTest {
     @Test
     public void testJP_nn()
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(new byte[] {(byte) 0xC3, 0x05,0x00, 0x76,0x76,0x76, 0x76});
+        Z80 z80 = new Z80(new byte[] {(byte) 0xC3, 0x05,0x00, 0x76,0x76,0x76, 0x76});
+
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -136,8 +131,7 @@ public class JumpTest {
     })
     public void testJP_NZ(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -153,8 +147,7 @@ public class JumpTest {
     })
     public void testJP_Z(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -170,8 +163,7 @@ public class JumpTest {
     })
     public void testJP_NC(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -187,8 +179,7 @@ public class JumpTest {
     })
     public void testJP_C(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -205,8 +196,7 @@ public class JumpTest {
     })
     public void testJP_PO(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -222,8 +212,7 @@ public class JumpTest {
     })
     public void testJP_PE(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -239,8 +228,7 @@ public class JumpTest {
     })
     public void testJP_P(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }
@@ -256,8 +244,7 @@ public class JumpTest {
     })
     public void testJP_M(@ConvertWith(ByteArrayConverter.class) byte[] memory)
     {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         while (!z80.isHalt()) {
             z80.cycle();
         }

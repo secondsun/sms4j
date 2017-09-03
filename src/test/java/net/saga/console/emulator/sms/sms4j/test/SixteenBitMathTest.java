@@ -29,8 +29,7 @@ public class SixteenBitMathTest {
         int fullAddend = (short)(((memory[5]/*addend high*/ << 8 ) & 0xFF00) | memory[4]);
         int sum = fullAddend + fullAugend;
         
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(31);
 
         assertEquals (7, z80.getPC());

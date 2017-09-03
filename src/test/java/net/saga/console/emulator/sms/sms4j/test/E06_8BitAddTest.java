@@ -30,8 +30,7 @@ public class E06_8BitAddTest {
             "'0x3E, 0xF4, 0x0E, 0x01, 0x81'"
     })
     public void test_Add_A_r(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(18);
 
         int regValue = (memory[3] & 0xFF);
@@ -59,8 +58,7 @@ public class E06_8BitAddTest {
             "'0x3E, 0xF4, 0x21, 0x06, 0x00, 0x86, 0x01'", //LD a 0x44, LD HL 0x06, ADD_A (HL)
     })
     public void test_Add_A_at_HL(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         byte regValue = memory[6];
@@ -98,9 +96,8 @@ public class E06_8BitAddTest {
     })
     public void test_AdC_r(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
         boolean carry = memory[5] > 0;
-        Z80 z80 = new Z80();
+        Z80 z80 = new Z80(memory);
         z80.setCarry(carry);
-        z80.setMemory(memory);
         z80.cycle(18);
 
         byte regValue = (byte) (memory[3] & 0xFF);
@@ -129,8 +126,7 @@ public class E06_8BitAddTest {
             "'0x3E, 0xF4, 0x21, 0x06, 0x00, 0x86, 0x01'", //LD a 0x44, LD HL 0x06, ADD_A (HL)
     })
     public void test_AdC_at_HL(@ConvertWith(ByteArrayConverter.class) byte[] memory) {
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(24);
 
         byte val = (byte) (memory[6] & 0xFF);
@@ -165,8 +161,7 @@ public class E06_8BitAddTest {
         int trueSum = (val & 0xFF) + (val2 & 0xFF);
         byte byteSum = (byte) (trueSum);
 
-        Z80 z80 = new Z80();
-        z80.setMemory(memory);
+        Z80 z80 = new Z80(memory);
         z80.cycle(15);
 
 
