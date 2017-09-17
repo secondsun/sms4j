@@ -308,7 +308,7 @@ public class InstructionDecoder {
                         //IN A, (n)
                     case 4:
                         //EX (SP), HL
-                        return new Exchange(z80.getMemoryRegisterSP(), z80.getRegisterHL(), 19);
+                        return new ExchangeHL(z80.getMemoryRegisterSP(), z80.getRegisterHL());
                     case 5:
                         //EX DE, HL
                         return new Exchange(z80.getRegisterDE(), z80.getRegisterHL());

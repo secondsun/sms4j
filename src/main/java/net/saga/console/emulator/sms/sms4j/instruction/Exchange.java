@@ -13,12 +13,6 @@ public class Exchange implements InstructionExecution {
         this.durationInCycles = 4;
     }
 
-    public Exchange(Register left, Register right, int durationInCycles) {
-        this.left = left;
-        this.right = right;
-        this.durationInCycles = durationInCycles;
-    }
-
     @Override
     public int exec() {
         int leftValue = left.getValue();

@@ -33,6 +33,19 @@ public class MemoryRegister implements Register{
         this.register = register;
     }
 
+    public int getValue16() {
+        byte low = memory[register.getValue()];
+        byte high = memory[register.getValue() + 1];
+        return ((high << 8) & 0xFF00) | (low & 0xFF);
+    }
+
+    public void setValue16(int value) {
+        byte low = (byte) (value & 0xFF);
+        byte high = (byte) ((value & 0xFF00) >>> 8);
+        memory[register.getValue()] = low;
+        memory[register.getValue() + 1] = high;
+    }
+
     @Override
     public int getValue() {
         return memory[register.getValue()] & 0xFF;

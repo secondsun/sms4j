@@ -66,6 +66,7 @@ public class Z80 {
     private int programCounter;
     private final byte[] memory;
 
+
     public Z80(byte[] memory){
         this.memory = memory;
         memoryRegisterHL = new MemoryRegister(this.memory, registerHL);
@@ -317,7 +318,11 @@ public class Z80 {
         return this.registerAF_alt;
     }
 
-    public Register getMemoryRegisterSP() {
+    public MemoryRegister getMemoryRegisterSP() {
         return memoryRegisterSP;
+    }
+
+    public SixteenBitDirectRegister getRegisterSP() {
+        return stackPointer;
     }
 }

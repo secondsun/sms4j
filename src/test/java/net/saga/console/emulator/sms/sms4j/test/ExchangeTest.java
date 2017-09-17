@@ -33,7 +33,20 @@ public class ExchangeTest {
 
     @Test
     public void testExchangeSPmem() {
-       throw new RuntimeException("PLease implement");
+        byte[] memory = new byte[0xFFFF];
+        Z80 z80 = new Z80(memory);
+        z80.getRegisterHL().setValue(0x7012);
+        z80.getRegisterSP().setValue(0x8856);
+        memory[0x8856] = 0x11;
+        memory[0x8857] = 0x22;
+        memory[0] = (byte) 0xE3;
+        memory[1] = 0x76;
+        z80.cycle(20);
+        assertEquals(2, z80.getPC());
+        assertEquals(0x2211, z80.getRegisterHL().getValue());
+        assertEquals(0x12, memory[0x8856]);
+        assertEquals(0x70, memory[0x8857]);
+        assertEquals(0x8856, z80.getRegisterSP().getValue());
         /**
          * HL register pair contains 7012h
          * SP register pair contains 8856h
